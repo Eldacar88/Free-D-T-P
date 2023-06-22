@@ -1,0 +1,61 @@
+.smallcalendarcontainer{
+    margin: 9px;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.headerparagraph{
+    color: gray;
+    font-weight: bold;
+}
+
+.buttonspan{
+    display:  flex;
+    flex-direction: row;
+    gap: 10px;
+    background-color: white;
+    border: 0px;
+}
+
+.minicalendarcontainer{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+    
+}
+
+.text_1{
+    text-align: center;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.smallcalendarday{
+    width: 100%;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    background-color: white;
+    border: 0px;
+}
+
+.nowDay{
+    color: white;
+    background-color: rgb(59 130 246);
+    border-radius: 9999px;
+    border: 0px;
+}
+
+.slcDay{
+    font-weight: bold;
+    border-radius: 9999px;
+    background-color: rgb(219 234 254);
+    color: rgb(37 99 235);
+}
+
+.daytext{
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}

@@ -1,0 +1,15 @@
+.navbarcontainer{
+    color: black;
+    width: 100vw;
+    display: flex;
+}
+
+.link{
+    text-align: center;
+}
+
+#navcontainer{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}

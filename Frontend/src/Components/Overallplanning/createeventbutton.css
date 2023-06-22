@@ -1,0 +1,15 @@
+img{
+    width: 3vw;
+    height: 3vh;
+}
+
+.eventbutton{
+    border: 2px solid lightgray;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;   
+}
+
+.eventbutton:hover{
+    border: 3px solid lightgray;
+}

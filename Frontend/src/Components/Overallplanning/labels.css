@@ -1,0 +1,73 @@
+.labelparagraph{
+    color: rgb(107 114 128);
+    font-weight: bold;
+    margin-top: 2.25rem;
+}
+
+.label{
+    display: flex;
+    align-items: center;
+    margin-top: 0.75rem;
+}
+
+.labelinput{
+    appearance: none;
+    -webkit-appearance: none;
+    height: 1.5rem;
+    width: 1.5rem;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.labelinput:focus{
+    box-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+}
+
+.labelspan{
+    margin-left: 2px;
+    color: rgb(55 65 81);
+    text-transform: capitalize;
+}
+
+.color_00::after, .color_01::after, .color_02::after, .color_03::after, .color_04::after, .color_05::after{
+    font-family: "Font Awesome 5 Free";
+    font-weight: 700;
+    content: "✔";
+    font-size: 20px;
+    color: white;
+    display: none;
+}
+
+
+.color_00:checked::after, .color_01:checked::after, .color_02:checked::after, .color_03:checked::after, .color_04:checked::after, .color_05:checked::after{
+    display: block;
+}
+
+.color_00:checked{
+    background-color: indigo;
+}
+
+.color_01:checked{
+    background-color: gray;
+}
+
+.color_02:checked{
+    background-color: green;
+}
+
+.color_03:checked{
+    background-color: blue;
+}
+
+.color_04:checked{
+    background-color: red;
+}
+
+.color_05:checked{
+    background-color: purple;
+}

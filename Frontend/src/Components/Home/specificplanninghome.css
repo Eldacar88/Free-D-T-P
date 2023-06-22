@@ -1,0 +1,18 @@
+.specifichomecontainer{
+    background-color: rgb(116, 149, 209);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+h2{
+    color: white;
+}
+
+.listgroupcontainer{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border-radius: 0px;
+}

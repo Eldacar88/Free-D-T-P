@@ -1,0 +1,14 @@
+.newoverallplanningcontainer{
+    width: 98vw;
+    height: 97vh;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    background-color: white;
+    margin-top: 10px;
+}
+
+.calendarcontainer{
+    height: 100%;
+    display: flex;
+}

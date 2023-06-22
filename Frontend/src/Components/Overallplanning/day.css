@@ -1,0 +1,75 @@
+.daycontainer{
+    border: 2px solid gray;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dayparagraph{
+    width: 120%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.dayparagraphtoday{
+    width: 120%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid blue;
+    background-color: blue;
+    border-radius: 50%;
+    color: white;
+}
+
+.dayselection{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1 1 0%;
+    cursor: pointer;
+}
+
+.eventlabel{
+    width: 100%;
+    
+    padding: 1px;
+    margin: 3px;
+    margin-bottom: 1px;
+    border: 0px;
+    border-radius: 5px;
+    color:white;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.color_0{
+    background-color: indigo;
+}
+
+.color_1{
+    background-color: gray;
+}
+
+.color_2{
+    background-color: green;
+}
+
+.color_3{
+    background-color: blue;
+}
+
+.color_4{
+    background-color: red;
+}
+
+.color_5{
+    background-color: purple;
+}
