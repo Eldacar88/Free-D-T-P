@@ -1,0 +1,13 @@
+.welcomecontainer{
+    width: 100%;
+    height: 91vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20vh;
+}
+
+h1{
+    color: white;
+}

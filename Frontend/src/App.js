@@ -7,10 +7,12 @@ import Overallplanningoverview from './Components/Overallplanning/Overallplannin
 import Newoverallplanning from './Components/Overallplanning/Newoverallplanning';
 import Login from './Components/Login/Login';
 import Register from './Components/Register/Register';
+import Welcome from './Components/Welcome/Welcome';
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getMonth } from './Components/Overallplanning/util';
+import { Link, Navigate } from "react-router-dom";
 
 
 
@@ -43,18 +45,21 @@ function App() {
       <Router>
         <Navigationbar handleLogout={handleLogout}/>
         <Routes>
-          <Route path="/" element={<Home/>}/>
+          <Route path="/" element={<Welcome/>}/>
 
-          <Route path='/overallplanningoverview' element={<Overallplanningoverview/>}/>
+          <Route path="/home" element={isloggedIn ? <Home/> : <Navigate to="/" replace/>}/>
 
-          <Route path='/newoverallplanning' element={<Newoverallplanning/>}/>
+          <Route path='/overallplanningoverview' element={isloggedIn ? <Overallplanningoverview/> : <Navigate to="/" replace/>}/>
+
+          <Route path='/newoverallplanning' element={isloggedIn ? <Newoverallplanning/> : <Navigate to="/" replace/>}/>
 
           <Route path='/login' element ={<Login handleLogin={handleLogin}/>}/>
 
           <Route path='/register' element ={<Register/>}/>
 
-        </Routes>
+          
 
+        </Routes>
         
       </Router>
     </div>

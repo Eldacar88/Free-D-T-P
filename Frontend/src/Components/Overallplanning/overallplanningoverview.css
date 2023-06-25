@@ -12,20 +12,27 @@
     gap: 15vw;
 }
 
-img{
+#image1{
     border-radius: 50%;
-    
+    width: 300px;
+    height: 449px;
 }
 
 .overallplanningcreatecontainer{
     display: flex;
     flex-direction: column;
     gap: 50px;
+    
 }
 
 .overallplanningloadcontainer{
     display: flex;
     flex-direction: column;
     gap: 50px;
+    
+}
+
+h1{
+    color: white;
 }
 

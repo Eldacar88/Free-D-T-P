@@ -24,12 +24,13 @@ const Navigationbar = ({handleLogout}) => {
                                 style={{ maxHeight: '100px' }}
                                 navbarScroll>
 
-                                <div><Link to={"/"}>Home</Link></div>
+                                <div><Link to={"/home"}>Home</Link></div>
                                 <div><Link to ={"/overallplanningoverview"}>New Overall Planing</Link></div>
                                 <Nav.Link href="#">New Individual Planing</Nav.Link>
                                 <div><Link to ={"/login"}>Login</Link></div>
                                 <div><Link to ={"/register"}>Register</Link></div>
                                 <div><Link className="link" to={"/"} onClick={logout}>Logout</Link></div>
+                                
                                 
                                 
                             </Nav>

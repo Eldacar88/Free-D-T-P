@@ -146,6 +146,25 @@ app.post('/login', async(req, res) => {
     res.status(200).send({token,message: "Login successful"});
 })
 
+app.post("/forget-password", async(req,res)=> {
+    const email = req.body;
+
+    try{
+        const oldUser = await FreeDTPUser.findOne({email});
+        if(!oldUser){
+            return res.sendStatus("User does not exist.");
+        }
+
+        const secret = process.env.JWT_SECRET + oldUser.password;
+        const token = jwt.sign({email: oldUser._email, id: oldUser._id}, secret, {expiresIn:'5m'});
+        const link = `http://localhost:3002/reset-password/${oldUser._id}/${token}`;
+    }
+
+    catch(error){
+
+    }
+})
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on Port ${PORT}`);

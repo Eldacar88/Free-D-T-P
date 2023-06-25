@@ -33,9 +33,9 @@ const Login = ({handleLogin}) => {
             console.log(response);
             localStorage.setItem("token", response.data.token);
             handleLogin(true);
-            navigator("/feed");
+            navigator("/home");
 
-            if(response.status !== 201){
+            if(response.status !== 200){
                 throw new Error('failed to register');
             }
         }

@@ -63,18 +63,18 @@ const Register = () => {
             <div className="registercontainer">
                 <h1>Welcome to Free-D-T-P</h1>
                 <h2>Register</h2> 
-                <form ref={formRef}>
+                <form ref={formRef} onSubmit={(e) => registerUser(e)}>
                    
                     <div className="namecontainer">
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                            <Form.Label>First Name</Form.Label>
-                            <Form.Control type="text" placeholder="First Name" />
-                        </Form.Group>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Frist Name</label>
+                            <input required name="firstname" type="text" class="form-control" id="firstnameinput" placeholder="First Name"/>
+                        </div>
 
-                        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                            <Form.Label>Last Name</Form.Label>
-                            <Form.Control type="text" placeholder="Last Name" />
-                        </Form.Group>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Last Name</label>
+                            <input type="text" required name="lastname" class="form-control" id="lastnameinput" placeholder="Last Name"/>
+                        </div>
 
                     </div>
 
