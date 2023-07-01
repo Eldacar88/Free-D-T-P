@@ -10,7 +10,7 @@ const Welcome = () => {
 
     return(
         <div className="welcomecontainer">
-            <h1>Willkommen bei Free-D-T-P</h1>
+            <h1>Welcome to Free-D-T-P</h1>
             
             <Button variant="primary" onClick={handleClick}>Continue</Button>
         </div>

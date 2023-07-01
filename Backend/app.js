@@ -6,6 +6,14 @@ const cors = require('cors');
 const mongoose = require('mongoose')
 const multer = require('multer');
 const bcrypt = require('bcrypt');
+
+//nodemailer
+const nodemailer = require("nodemailer");
+//passport
+const passport = require("passport");
+//cookie session
+const cookieSession = require("cookie-session");
+//JSON Webtoken
 //JSON Webtoken
 const jwt = require('jsonwebtoken');
 
@@ -146,25 +154,85 @@ app.post('/login', async(req, res) => {
     res.status(200).send({token,message: "Login successful"});
 })
 
-app.post("/forget-password", async(req,res)=> {
-    const email = req.body;
-
+app.post("/auth/reset", async(req, res, next) => {
+    //get email from body
+    const {email} = req.body;
+    console.log(email);
+    if(!email){
+        return res.status(404).send({message: "Please fill out all fields."});
+    }
+    //check if email exists
     try{
-        const oldUser = await FreeDTPUser.findOne({email});
-        if(!oldUser){
-            return res.sendStatus("User does not exist.");
+        const userExists = await FreeDTPUser.findOne({email: email});
+        console.log(userExists);
+        if(!userExists){
+            res.status(401).send({message: "User does not exist"});
         }
-
-        const secret = process.env.JWT_SECRET + oldUser.password;
-        const token = jwt.sign({email: oldUser._email, id: oldUser._id}, secret, {expiresIn:'5m'});
-        const link = `http://localhost:3002/reset-password/${oldUser._id}/${token}`;
-    }
-
+        //create unique 6 digit code
+        const code = Math.floor(100000 + Math.random()*900000);
+        //send email to all possible email engines with code
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth:{
+                user: process.env.EMAIL,
+                pass: process.env.EMAIL_PASSWORD
+            }
+        });
+        // mail that is going to be send
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: email,
+            subject: "Reset Password",
+            text: `Your Reset Code is ${code}`
+        };
+        //sending the mail
+        transporter.sendMail(mailOptions, (error, info) =>{
+            if(error){
+                console.log(error);
+                return res.status(500).send({message: "Internal server Error"});
+            } else {
+                console.log("Email sent:" + info.response);
+                const token = jwt.sign({email: email}, process.env.JWT_SECRET);
+                return res.status(200).send({message: "Email sent", token: token, code});
+            }
+        }
+        )
+        }
     catch(error){
+        console.log(error);
+        return res.status(500).send({message: "Internal server error"});
+        }
+    })
 
-    }
-})
-
+    //reset password route
+    app.post("/auth/reset/newPassword", async(req,res) => {
+        const password = req.body.password;
+        const token = req.headers.authorization.split(" ")[1];
+        if(!password || !token){
+          res.status(404).send({message: "Unvalid input"});
+        }
+        try {
+          console.log(`Emailtoken: ${token}`);
+          const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+          console.log(decodedToken);
+          const existUser = FreeDTPUser.findOne({email: decodedToken.email});
+          if(!existUser){
+            return res.status(409).send({message: "User does not exist"});
+        }
+        //hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+        //update user password
+        const user = await FreeDTPUser.findOneAndUpdate({email: decodedToken.email}, {password: hashedPassword});
+        if(!user){
+          return res.status(404).send({message: "User not found"});
+        }
+          res.status(200).send({message: "Password updated!"});
+        } catch (error) {
+          console.log(error);
+          res.status(500).send({message: "Internal Server Error"});
+        }
+      
+      })
 
 app.listen(PORT, () => {
     console.log(`Server is running on Port ${PORT}`);

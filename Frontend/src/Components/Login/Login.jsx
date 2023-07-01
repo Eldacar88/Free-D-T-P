@@ -48,6 +48,10 @@ const Login = ({handleLogin}) => {
         navigator("/register");
       }
 
+    const gotoPasswordReset= async() => {    
+        navigator("/reset/askEmail");
+    }
+
     return(
         <div className="surround">        
             <div className="logincontainer">
@@ -73,6 +77,10 @@ const Login = ({handleLogin}) => {
                         
                         <Button width="200px" variant="dark" type="submit" size="lg" onSubmit={loginRequest}>
                             Login
+                        </Button>
+
+                        <Button width="200px" variant="dark" type="submit" size="lg" onClick={gotoPasswordReset}>
+                            Forgot Password
                         </Button>
                     </div>
 
