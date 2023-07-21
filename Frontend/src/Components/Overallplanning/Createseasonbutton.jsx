@@ -1,25 +1,28 @@
-import "./createeventbutton.css"
+import "./createseasonbutton.css"
 import GlobalContext from "../../Context/GlobalContext";
 import React, { useContext } from "react";
-import plusImg from "./assets/plus.svg"
+import plusImg from "./assets/plus.svg";
 
-const Createeventbutton = ({userRole, setUserRole}) => {
-    const { setShowEventModal } = useContext(GlobalContext);
+const Createseasonbutton = ({userRole, setUserRole}) => {
+
+    const {setShowSeasonModal} = useContext(GlobalContext);
 
     return(
         <div className="eventbuttoncontainer">
             <button className="eventbutton" onClick={() =>{
                 if(userRole === "coach"){
-                    setShowEventModal(true);
+                    setShowSeasonModal(true);
                 }}
             }
                 
                 >
                 <img src={plusImg} alt="create_event"/>
-                <span> Create New Competition</span>
+                <span> Create New Season</span>
             </button>
         </div>
 
     )
+
 }
-export default Createeventbutton;
+
+export default Createseasonbutton

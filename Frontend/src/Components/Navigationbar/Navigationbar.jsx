@@ -7,7 +7,7 @@ import Navbar from 'react-bootstrap/Navbar';
 
 import { Link, Navigate } from "react-router-dom";
 
-const Navigationbar = ({handleLogout}) => {
+const Navigationbar = ({handleLogout, userRole, setUserRole}) => {
 
     const logout = () => {
         handleLogout(true);
@@ -25,7 +25,9 @@ const Navigationbar = ({handleLogout}) => {
                                 navbarScroll>
 
                                 <div><Link to={"/home"}>Home</Link></div>
+
                                 <div><Link to ={"/overallplanningoverview"}>New Overall Planing</Link></div>
+                                
                                 <Nav.Link href="#">New Individual Planing</Nav.Link>
                                 <div><Link to ={"/login"}>Login</Link></div>
                                 <div><Link to ={"/register"}>Register</Link></div>
@@ -35,15 +37,6 @@ const Navigationbar = ({handleLogout}) => {
                                 
                             </Nav>
 
-                            <Form className="d-flex">
-                                <Form.Control
-                                type="search"
-                                placeholder="Search"
-                                className="me-2"
-                                aria-label="Search"
-                                />
-                                <Button variant="outline-success">Search</Button>
-                            </Form>
                     </Navbar.Collapse>
         </Container>
     </Navbar>

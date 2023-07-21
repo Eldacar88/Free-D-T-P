@@ -22,6 +22,8 @@ function App() {
   const [isloggedIn, setLoggedIn] = useState(false);
   const [resetAllowed,setResetAllowed] = useState(false);
   const [resetNumber, setResetNumber] = useState(0);
+  // true = coach false = athlet
+  const [userRole, setUserRole] = useState("athlet");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -45,17 +47,17 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <Navigationbar handleLogout={handleLogout}/>
+        <Navigationbar handleLogout={handleLogout} userRole={userRole} setUserRole={setUserRole}/>
         <Routes>
           <Route path="/" element={<Welcome/>}/>
-
+          
           <Route path="/home" element={isloggedIn ? <Home/> : <Navigate to="/" replace/>}/>
 
-          <Route path='/overallplanningoverview' element={isloggedIn ? <Overallplanningoverview/> : <Navigate to="/" replace/>}/>
+          <Route path='/overallplanningoverview' element={isloggedIn ? <Overallplanningoverview userRole={userRole} setUserRole={setUserRole}/> : <Navigate to="/" replace/>}/>
 
-          <Route path='/newoverallplanning' element={isloggedIn ? <Newoverallplanning/> : <Navigate to="/" replace/>}/>
+          <Route path='/newoverallplanning' element={isloggedIn ? <Newoverallplanning userRole={userRole} setUserRole={setUserRole}/> : <Navigate to="/" replace/>}/>
 
-          <Route path='/login' element ={<Login handleLogin={handleLogin}/>}/>
+          <Route path='/login' element ={<Login handleLogin={handleLogin} userRole={userRole} setUserRole={setUserRole}/>}/>
 
           <Route path='/register' element ={<Register/>}/>
 

@@ -6,22 +6,22 @@ const Labels = () => {
     const { labels, updateLabel } = useContext(GlobalContext);
 
     function applyLabelcolor (lbl) {
-        if(lbl === "indigo"){
+        if(lbl === "wettkampf"){
             return "color_00";
         }
-        else if(lbl === "gray"){
+        else if(lbl === "geschwindigkeit"){
             return "color_01";
         }
-        else if(lbl === "green"){
+        else if(lbl === "technik"){
             return "color_02";
         }
-        else if(lbl === "blue"){
+        else if(lbl === "ausdauer"){
             return "color_03";
         }
-        else if(lbl === "red"){
+        else if(lbl === "kraft"){
             return "color_04";
         }
-        else if(lbl === "purple"){
+        else if(lbl === "kraftausdauer"){
             return "color_05";
         }
     }

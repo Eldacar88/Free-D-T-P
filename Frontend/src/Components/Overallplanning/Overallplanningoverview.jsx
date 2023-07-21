@@ -4,7 +4,7 @@ import create from './img/overallplanning_create.jpg';
 import load from './img/overallplanning_load.jpg';
 import { Link, Navigate } from "react-router-dom";
 
-const Overallplanningoverview = () => {
+const Overallplanningoverview = ({userRole, setUserRole}) => {
     return(
 
 

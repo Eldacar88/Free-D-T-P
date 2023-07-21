@@ -42,3 +42,9 @@ h1{
     width: 520px;
 }
 
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+

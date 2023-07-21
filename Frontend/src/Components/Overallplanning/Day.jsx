@@ -3,7 +3,7 @@ import React, {useContext, useState, useEffect} from 'react';
 import dayjs from "dayjs";
 import GlobalContext from "../../Context/GlobalContext";
 
-const Day = ({day, rowIdx}) => {
+const Day = ({day, rowIdx, userRole, setUserRole}) => {
     const [dayEvents, setDayEvents] = useState([]);
 
     const {
@@ -26,25 +26,24 @@ const Day = ({day, rowIdx}) => {
         "dayparagraphtoday" : ""}
 
     function applyEventLabel(eventlabel){
-        if(eventlabel === "indigo"){
+        if(eventlabel === "wettkampf"){
             return "color_0";
         }
-        else if(eventlabel === "gray"){
+        else if(eventlabel === "geschwindigkeit"){
             return "color_1";
         }
-        else if(eventlabel === "green"){
+        else if(eventlabel === "technik"){
             return "color_2";
         }
-        else if(eventlabel === "blue"){
+        else if(eventlabel === "ausdauer"){
             return "color_3";
         }
-        else if(eventlabel === "red"){
+        else if(eventlabel === "kraft"){
             return "color_4";
         }
-        else if(eventlabel === "purple"){
+        else if(eventlabel === "kraftausdauer"){
             return "color_5";
         }  
-
     }
 
     return(
@@ -62,7 +61,10 @@ const Day = ({day, rowIdx}) => {
 
             <div className="dayselection" onClick={() => {
                 setDaySelected(day);
-                setShowEventModal(true);
+                if(userRole === "coach"){
+                    setShowEventModal(true);
+                }
+                
                 }}>
                     {dayEvents.map((evt, idx) => (
                         <div

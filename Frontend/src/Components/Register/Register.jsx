@@ -1,7 +1,7 @@
 import "./register.css"
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Link, Navigate } from "react-router-dom";
+
 import { useRef, useState } from "react";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
@@ -21,6 +21,7 @@ const Register = () => {
             id: uuid4(),
             firstname: form.firstname.value,
             lastname: form.lastname.value,
+            role: form.role.value,
             email: form.email.value,
             password: form.password.value
         }
@@ -77,7 +78,13 @@ const Register = () => {
                         </div>
 
                     </div>
-
+                    
+                        <Form.Select aria-label="Default select example" name="role">
+                            <option>Select Role</option>
+                            <option value="Coach">Coach</option>
+                            <option value="Athlet">Athlet</option>
+                        </Form.Select>                   
+                        
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">Email</label>
                         <input required name="email" type="email" class="form-control" id="emailInput" placeholder="Email Adress"/>

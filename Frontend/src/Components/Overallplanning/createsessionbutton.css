@@ -8,10 +8,8 @@ img{
     border-radius: 20px;
     display: flex;
     align-items: center;   
-    width: 100%;
 }
 
 .eventbutton:hover{
     border: 3px solid lightgray;
 }
-

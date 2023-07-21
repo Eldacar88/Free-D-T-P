@@ -14,7 +14,6 @@ const passport = require("passport");
 //cookie session
 const cookieSession = require("cookie-session");
 //JSON Webtoken
-//JSON Webtoken
 const jwt = require('jsonwebtoken');
 
 //express limit
@@ -43,6 +42,48 @@ const storage = multer.diskStorage({
 
 const uploads = multer({storage: storage});
 
+const eventScheme = new mongoose.Schema({
+    title:{
+        type: String,
+        required: true,
+        minlegth: 1,
+        maxlength: 50,
+      },
+
+    description:{
+        type: String,
+        required: true,
+        minlegth: 1,
+        maxlength: 50,
+      },
+
+      label:{
+        type: String,
+        required: true,
+        minlegth: 1,
+        maxlength: 50,
+      },
+
+      day:{
+        type: String,
+        required: true,
+        minlegth: 1,
+        maxlength: 50,
+      },
+      id:{
+        type: String,
+        required: true,
+      },
+
+      realId:{
+        type: String,
+        required: true,
+      },
+
+})
+
+const Event= mongoose.model('event', eventScheme);
+
 const freeDTPUserScheme = new mongoose.Schema({
     firstname:{
         type: String,
@@ -63,6 +104,12 @@ const freeDTPUserScheme = new mongoose.Schema({
         minlegth: 8,
         maxlength: 50,
       },
+    role: {
+        type: String,
+        required: true,
+        minlegth: 8,
+        maxlength: 50,
+      },
     password: {
         type: String,
         required: true,
@@ -76,7 +123,6 @@ const freeDTPUserScheme = new mongoose.Schema({
 })
 
 const FreeDTPUser = mongoose.model('freedtpuser', freeDTPUserScheme);
-
 
 app.use(express.json());
 
@@ -102,11 +148,67 @@ app.post('/postuser', async(req, res) => {
     res.status(200).send("Neuer User angelegt, Datenbank aktualisiert.");
 })
 
+app.post('/postEvent', async(req, res) =>{
+    const {title, description, label, day, id, realId} = req.body;
+
+    if(!title || !description || !label || !day || !id || !realId){
+        return res.status(404).send({message: "Please fill out all fields."});
+    }
+
+    const event = new Event({title, description, label, day, id, realId});
+
+    try{
+        await Event.create(event);
+        res.status(201).send({message: "Event succesfully created."});
+    }
+    catch(error){
+        res.status(500).send({message: "Something went wrong"});
+    }
+})
+
+app.get('/getEvent', async(req, res) => {
+  try{
+    const eventData = await Event.find({});
+    res.status(200).send({eventData, message: "Fetching of data was successful"});
+  }
+  catch(error)
+  {
+    console.log(err);
+      res.status(500).send('Error fetching data from MongoDB');
+  }
+  
+/*
+  await Event.find({}, (err, items) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error fetching data from MongoDB');
+    } else {
+      res.status(200).send({items, message: "Fetching of data was successful"});
+    }
+  });*/
+})
+
+app.delete('/deleteEvent', async(req, res) => {
+  const {title, description, label, day, id, realId} = req.body;
+
+  const existsEvent = await Event.findOne({title});
+  const selectedDay = day;
+
+  try{
+    if(existsEvent.day == selectedDay){
+      await Event.deleteOne({title: title});
+    } 
+    res.status(200).send(`Event deleted succesfully.`);
+  }
+  catch(error){
+    res.status(500).send({message: "Something went wrong"});
+  }
+})
 
 app.post('/register', limit, async(req,res)=>{
-    const{id, firstname, lastname, email, password} = req.body;
+    const{id, firstname, lastname, email, password, role} = req.body;
     // sind alle Felder ausgefüllt
-    if(!id || !firstname || !lastname || !email || !password){
+    if(!id || !firstname || !lastname || !email || !password || !role){
         return res.status(404).send({message: "Please fill out all fields."});
     }
     // existiert der Nutzer
@@ -118,7 +220,7 @@ app.post('/register', limit, async(req,res)=>{
 
     // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new FreeDTPUser({id, firstname, lastname, email, password: hashedPassword});
+    const user = new FreeDTPUser({id, firstname, lastname, email, password: hashedPassword, role});
 
     try{
         await FreeDTPUser.create(user);
@@ -130,9 +232,9 @@ app.post('/register', limit, async(req,res)=>{
 })
 
 app.post('/login', async(req, res) => {
-    const {email, password} = req.body;
+    const {role,email, password} = req.body;
     // check if email and password have been entered
-    if(!email || !password){
+    if(!email || !password || !role){
         return res.status(404).send({message: "Please fill out all fields."});
     }
 
@@ -149,9 +251,17 @@ app.post('/login', async(req, res) => {
         return res.status(401).send({message: "Password is incorrect."});
     }
 
+    //send role
+    const existingRole = existsUser.role;
+    const selectedRole = role;
+
+    if(existingRole != selectedRole){
+        return res.status(401).send({message: "Incorrect user-role."});
+    }
+
     //create jwt token
     const token = jwt.sign({id: existsUser._id}, process.env.JWT_SECRET);
-    res.status(200).send({token,message: "Login successful"});
+    res.status(200).send({selectedRole, token ,message: "Login successful"});
 })
 
 app.post("/auth/reset", async(req, res, next) => {
@@ -208,6 +318,7 @@ app.post("/auth/reset", async(req, res, next) => {
     app.post("/auth/reset/newPassword", async(req,res) => {
         const password = req.body.password;
         const token = req.headers.authorization.split(" ")[1];
+        
         if(!password || !token){
           res.status(404).send({message: "Unvalid input"});
         }

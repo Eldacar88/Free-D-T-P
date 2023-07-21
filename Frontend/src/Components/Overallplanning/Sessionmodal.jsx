@@ -1,13 +1,12 @@
-import "./eventmodal.css"
+import "./sessionmodal.css";
+import GlobalContext from "../../Context/GlobalContext";
+import React, {useContext, useState, useRef} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faClock, faXmark, faBarsStaggered, faBookmark, faCheck, faTrash} from '@fortawesome/free-solid-svg-icons';
-import React, {useContext, useState, useRef} from 'react';
-import GlobalContext from "../../Context/GlobalContext";
-import axios from 'axios';
-import { uuid4 } from "uuid4";
+import Form from 'react-bootstrap/Form';
 
 const labelsClasses = [
-    "wettkampf",
+    "statik",
     "geschwindigkeit",
     "technik",
     "ausdauer",
@@ -15,21 +14,21 @@ const labelsClasses = [
     "kraftausdauer",
   ];
 
-const Eventmodal = () => {
+const Sessionmodal = () => {
     const formRef = useRef();
 
     const {
-        setShowEventModal,
+        setShowSessionModal,
         daySelected,
         dispatchCalEvent,
         selectedEvent,
       } = useContext(GlobalContext);
 
-    const [title, setTitle] = useState(selectedEvent ? selectedEvent.title : "");
+      const [title, setTitle] = useState(selectedEvent ? selectedEvent.title : "");
 
-    const [description, setDescription] = useState(selectedEvent ? selectedEvent.description : "");
+      const [session, setSession] = useState(selectedEvent ? selectedEvent.session : "");
 
-    const [selectedLabel, setSelectedLabel] = useState(selectedEvent
+      const [selectedLabel, setSelectedLabel] = useState(selectedEvent
         ? labelsClasses.find((lbl) => lbl === selectedEvent.label)
         : labelsClasses[0]);
 
@@ -53,59 +52,62 @@ const Eventmodal = () => {
             return "color_5";
         }  
       }
-
-      async function handleSubmit(e) {
+    //wichtig für DB
+      function handleSubmit(e) {
         e.preventDefault();
-        
+        /*
         const form = formRef.current;
         const formData = {
             id: selectedEvent ? selectedEvent.id : Date.now(),
-            realId: uuid4(),
-            title,
-            description,
+            title: form.title.value,
+            description: form.description.value,
             label: selectedLabel,
             day: daySelected.valueOf()
+            
         }
-
+        console.log(formData);
+        */
+        /*
         const config = {
-            url: "http://localhost:3002/postEvent",
+            url: "http://localhost:3002/event",
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            data: formData
+            data: JSON.stringify(formData)
         }
-        
+        */
+        /*
         try{
             const response = await axios(config);
             console.log(response);
 
             if(response.status !== 201){
-                throw new Error('failed to create event');
+                throw new Error('failed to register');
             }
 
+            if (selectedEvent) {
+                dispatchCalEvent({ type: "update", payload: response });
+              } else {
+                dispatchCalEvent({ type: "push", payload: response });
+              }
+              setShowEventModal(false);
         }
         catch(error){
-            console.log(error.response.data.message);
+            if(error.response.status === 429) {
+            
+            console.log(error.response.data);
+        } else {
+            
+            console.log(error);
         }
-
-        //DB-Part
-        /*
-        if (selectedEvent) {
-            dispatchCalEvent({ type: "update", payload: formData });
-          } else {
-            dispatchCalEvent({ type: "push", payload: formData });
-          }
-          setShowEventModal(false);*/
-
-        
+        */
         const calendarEvent = {
           title,
-          description,
+          session,
           label: selectedLabel,
           day: daySelected.valueOf(),
           id: selectedEvent ? selectedEvent.id : Date.now(),
-          realId: uuid4(),
         };
         
         if (selectedEvent) {
@@ -113,43 +115,10 @@ const Eventmodal = () => {
         } else {
           dispatchCalEvent({ type: "push", payload: calendarEvent });
         }
-        setShowEventModal(false);
+        setShowSessionModal(false);
       }
 
-      async function deleteEvent(e) {
-        
-        const formData = {
-            id: selectedEvent ? selectedEvent.id : Date.now(),
-            realId: uuid4(),
-            title,
-            description,
-            label: selectedLabel,
-            day: daySelected.valueOf()
-        }
-
-            const config = {
-            url: `http://localhost:3002/deleteEvent`,
-            method: "delete",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: formData
-        }
-
-        try{
-            const response = await axios(config);
-            console.log(response);
-
-            if(response.status !== 200){
-                throw new Error('failed to delete event');
-            }
-            }
-        catch(error){
-            console.log(error.response.data.message);
-        }
-      }
-
-    return(
+      return(
         <div className="overlaycontainer">
             <form className="formcontainer_eventmodal">
                 <header className="formheader">
@@ -164,8 +133,8 @@ const Eventmodal = () => {
                                 type: "delete",
                                 payload: selectedEvent,
                             });
-                            setShowEventModal(false);
-                            deleteEvent()
+                            setShowSessionModal(false);
+                            
                             }}
                             className="spanicon"
                         >
@@ -175,12 +144,13 @@ const Eventmodal = () => {
 
                     
                     <button>
-                        <span className="spanicon" onClick={() => setShowEventModal(false)}>
+                        <span className="spanicon" onClick={() => setShowSessionModal(false)}>
                             <FontAwesomeIcon icon={faXmark} />
                         </span>
                     </button>
                     </div>
                 </header>
+
 
                 <div className="middle" ref={formRef}>
                     <div className="middlegrid">
@@ -194,32 +164,47 @@ const Eventmodal = () => {
                          onChange={(e) => setTitle(e.target.value)}/>
 
                         <div className='datecontainer'>
-                            <span className="spanicon" onClick={() => setShowEventModal(false)}>
-                                <FontAwesomeIcon icon={faClock} />
+                            <span className="spanicon" onClick={() => setShowSessionModal(false)}>
+                                <FontAwesomeIcon icon={faBars} />
                             </span>
 
-                            {daySelected.format("dddd, MMMM DD")}
+                            1.Session:
+                            <br/>
 
+                            <Form.Select aria-label="Default select example" name="session1" value={session}>
+                                <option>Select Trainingtype</option>
+                                <option value="Statik">Statik</option>
+                                <option value="Geschwindigkeit">Geschwindigkeit</option>
+                                <option value="Technik">Technik</option>
+                                <option value="Kraft">Kraft</option>
+                                <option value="Ausdauer">Ausdauer</option>
+                                <option value="Kraftausdauer">Ausdauer</option>
+                            </Form.Select>
                         </div>
-                        
-                        <div className='descriptiocontainer'>
-                            <span className="spanicon" onClick={() => setShowEventModal(false)}>
-                                <FontAwesomeIcon icon={faBarsStaggered} />
+
+                        <div className='datecontainer'>
+                            <span className="spanicon" onClick={() => setShowSessionModal(false)}>
+                                <FontAwesomeIcon icon={faBars} />
                             </span>
-                            <input className="middleinput2"
-                                type="text"
-                                name="description" 
-                                placeholder="Add Description" 
-                                value={description} 
-                                required 
-                                onChange={(e) => setDescription(e.target.value)}/>
+
+                            2.Session:
+                            <br/>
+
+                            <Form.Select aria-label="Default select example" name="session2" value={session}>
+                                <option>Select Trainingtype</option>
+                                <option value="Statik">Statik</option>
+                                <option value="Geschwindigkeit">Geschwindigkeit</option>
+                                <option value="Technik">Technik</option>
+                                <option value="Kraft">Kraft</option>
+                                <option value="Ausdauer">Ausdauer</option>
+                                <option value="Kraftausdauer">Ausdauer</option>
+                            </Form.Select>
                         </div>
-                        
 
                         <div className='bookmarkcontainer'>
 
                         
-                        <span className="spanicon" onClick={() => setShowEventModal(false)}>
+                        <span className="spanicon" onClick={() => setShowSessionModal(false)}>
                             <FontAwesomeIcon icon={faBookmark} />
                         </span>
 
@@ -253,6 +238,7 @@ const Eventmodal = () => {
             </form>
         </div>
     )
+
 }
 
-export default Eventmodal;
+export default Sessionmodal;

@@ -1,13 +1,11 @@
-import "./eventmodal.css"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faClock, faXmark, faBarsStaggered, faBookmark, faCheck, faTrash} from '@fortawesome/free-solid-svg-icons';
+import "./seasonmodal.css"
 import React, {useContext, useState, useRef} from 'react';
 import GlobalContext from "../../Context/GlobalContext";
-import axios from 'axios';
-import { uuid4 } from "uuid4";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faClock, faXmark, faBarsStaggered, faBookmark, faCheck, faTrash} from '@fortawesome/free-solid-svg-icons';
 
 const labelsClasses = [
-    "wettkampf",
+    "statik",
     "geschwindigkeit",
     "technik",
     "ausdauer",
@@ -15,11 +13,11 @@ const labelsClasses = [
     "kraftausdauer",
   ];
 
-const Eventmodal = () => {
+const Seasonmodal = () => {
     const formRef = useRef();
 
     const {
-        setShowEventModal,
+        setShowSeasonModal,
         daySelected,
         dispatchCalEvent,
         selectedEvent,
@@ -27,7 +25,12 @@ const Eventmodal = () => {
 
     const [title, setTitle] = useState(selectedEvent ? selectedEvent.title : "");
 
-    const [description, setDescription] = useState(selectedEvent ? selectedEvent.description : "");
+    const [start, setStart] = useState(selectedEvent ? selectedEvent.start : "");
+
+    const [duration, setDuration] = useState(selectedEvent ? selectedEvent.duration : "");
+
+    const [daysOff, setDaysOff] = useState(selectedEvent ? selectedEvent.daysOff : "");
+
 
     const [selectedLabel, setSelectedLabel] = useState(selectedEvent
         ? labelsClasses.find((lbl) => lbl === selectedEvent.label)
@@ -53,59 +56,64 @@ const Eventmodal = () => {
             return "color_5";
         }  
       }
-
-      async function handleSubmit(e) {
+    //wichtig für DB
+      function handleSubmit(e) {
         e.preventDefault();
-        
+        /*
         const form = formRef.current;
         const formData = {
             id: selectedEvent ? selectedEvent.id : Date.now(),
-            realId: uuid4(),
-            title,
-            description,
+            title: form.title.value,
+            description: form.description.value,
             label: selectedLabel,
             day: daySelected.valueOf()
+            
         }
-
+        console.log(formData);
+        */
+        /*
         const config = {
-            url: "http://localhost:3002/postEvent",
+            url: "http://localhost:3002/event",
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            data: formData
+            data: JSON.stringify(formData)
         }
-        
+        */
+        /*
         try{
             const response = await axios(config);
             console.log(response);
 
             if(response.status !== 201){
-                throw new Error('failed to create event');
+                throw new Error('failed to register');
             }
 
+            if (selectedEvent) {
+                dispatchCalEvent({ type: "update", payload: response });
+              } else {
+                dispatchCalEvent({ type: "push", payload: response });
+              }
+              setShowEventModal(false);
         }
         catch(error){
-            console.log(error.response.data.message);
+            if(error.response.status === 429) {
+            
+            console.log(error.response.data);
+        } else {
+            
+            console.log(error);
         }
-
-        //DB-Part
-        /*
-        if (selectedEvent) {
-            dispatchCalEvent({ type: "update", payload: formData });
-          } else {
-            dispatchCalEvent({ type: "push", payload: formData });
-          }
-          setShowEventModal(false);*/
-
-        
+        */
         const calendarEvent = {
           title,
-          description,
+          start,
+          duration,
+          daysOff,
           label: selectedLabel,
           day: daySelected.valueOf(),
           id: selectedEvent ? selectedEvent.id : Date.now(),
-          realId: uuid4(),
         };
         
         if (selectedEvent) {
@@ -113,43 +121,10 @@ const Eventmodal = () => {
         } else {
           dispatchCalEvent({ type: "push", payload: calendarEvent });
         }
-        setShowEventModal(false);
-      }
-
-      async function deleteEvent(e) {
+        setShowSeasonModal(false);
         
-        const formData = {
-            id: selectedEvent ? selectedEvent.id : Date.now(),
-            realId: uuid4(),
-            title,
-            description,
-            label: selectedLabel,
-            day: daySelected.valueOf()
-        }
-
-            const config = {
-            url: `http://localhost:3002/deleteEvent`,
-            method: "delete",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: formData
-        }
-
-        try{
-            const response = await axios(config);
-            console.log(response);
-
-            if(response.status !== 200){
-                throw new Error('failed to delete event');
-            }
-            }
-        catch(error){
-            console.log(error.response.data.message);
-        }
       }
-
-    return(
+      return(
         <div className="overlaycontainer">
             <form className="formcontainer_eventmodal">
                 <header className="formheader">
@@ -164,8 +139,8 @@ const Eventmodal = () => {
                                 type: "delete",
                                 payload: selectedEvent,
                             });
-                            setShowEventModal(false);
-                            deleteEvent()
+                            setShowSeasonModal(false);
+                            
                             }}
                             className="spanicon"
                         >
@@ -175,12 +150,13 @@ const Eventmodal = () => {
 
                     
                     <button>
-                        <span className="spanicon" onClick={() => setShowEventModal(false)}>
+                        <span className="spanicon" onClick={() => setShowSeasonModal(false)}>
                             <FontAwesomeIcon icon={faXmark} />
                         </span>
                     </button>
                     </div>
                 </header>
+
 
                 <div className="middle" ref={formRef}>
                     <div className="middlegrid">
@@ -194,32 +170,77 @@ const Eventmodal = () => {
                          onChange={(e) => setTitle(e.target.value)}/>
 
                         <div className='datecontainer'>
-                            <span className="spanicon" onClick={() => setShowEventModal(false)}>
+                            <span className="spanicon" onClick={() => setShowSeasonModal(false)}>
                                 <FontAwesomeIcon icon={faClock} />
                             </span>
+
+                            Date of Final Contest:
+                            <br/>
 
                             {daySelected.format("dddd, MMMM DD")}
 
                         </div>
-                        
-                        <div className='descriptiocontainer'>
-                            <span className="spanicon" onClick={() => setShowEventModal(false)}>
-                                <FontAwesomeIcon icon={faBarsStaggered} />
+
+                        <div className='datecontainer'>
+                            <span className="spanicon" onClick={() => setShowSeasonModal(false)}>
+                                <FontAwesomeIcon icon={faClock} />
                             </span>
-                            <input className="middleinput2"
-                                type="text"
-                                name="description" 
-                                placeholder="Add Description" 
-                                value={description} 
-                                required 
-                                onChange={(e) => setDescription(e.target.value)}/>
+
+                            Start of Season:
+                            <br/>
+
+                            <input className="middleinput1"
+                            type="date"
+                            name="start" 
+                            value={start} 
+                            required 
+                            onChange={(e) => setStart(e.target.value)}/>
                         </div>
+
+                        <div className='datecontainer'>
+                            <span className="spanicon" onClick={() => setShowSeasonModal(false)}>
+                                <FontAwesomeIcon icon={faClock} />
+                            </span>
+
+                            Duration of each session in weeks:
+                            <br/>
+
+                            <input className="middleinput1"
+                            type="number"
+                            min="1"
+                            max="6"
+                            name="duration" 
+                            value={duration} 
+                            required 
+                            onChange={(e) => setDuration(e.target.value)}/>
+                        </div>
+
+                        <div className='datecontainer'>
+                            <span className="spanicon" onClick={() => setShowSeasonModal(false)}>
+                                <FontAwesomeIcon icon={faClock} />
+                            </span>
+
+                            Days off before final contest:
+                            <br/>
+
+                            <input className="middleinput1"
+                            type="number"
+                            min="1"
+                            max="6"
+                            name="daysoff" 
+                            value={daysOff} 
+                            required 
+                            onChange={(e) => setDaysOff(e.target.value)}/>
+                        </div>
+
+                        
+                        
                         
 
                         <div className='bookmarkcontainer'>
 
                         
-                        <span className="spanicon" onClick={() => setShowEventModal(false)}>
+                        <span className="spanicon" onClick={() => setShowSeasonModal(false)}>
                             <FontAwesomeIcon icon={faBookmark} />
                         </span>
 
@@ -253,6 +274,7 @@ const Eventmodal = () => {
             </form>
         </div>
     )
+
 }
 
-export default Eventmodal;
+export default Seasonmodal;

@@ -8,11 +8,9 @@
     padding: 20px;
     margin: 20px;
     align-items: center;
-}
-
-h1{
     color: white;
 }
+
 
 .namecontainer{
     display: flex;
@@ -41,4 +39,10 @@ h1{
 
 #emailInput {
     width: 500px;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }

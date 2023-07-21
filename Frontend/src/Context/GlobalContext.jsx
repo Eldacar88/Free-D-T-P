@@ -18,7 +18,10 @@ const GlobalContext = React.createContext({
     labels: [],
     updateLabel: () => {},
     filteredEvents: [],
-
+    showSeasonModal: false,
+    setShowSeasonModal: () => {},
+    showSessionModal: false,
+    setShowSessionModal: () => {}
 })
 
 export default GlobalContext;
