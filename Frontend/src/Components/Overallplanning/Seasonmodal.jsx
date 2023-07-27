@@ -3,9 +3,12 @@ import React, {useContext, useState, useRef} from 'react';
 import GlobalContext from "../../Context/GlobalContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faClock, faXmark, faBarsStaggered, faBookmark, faCheck, faTrash} from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
+import { uuid4 } from "uuid4";
+
 
 const labelsClasses = [
-    "statik",
+    "wettkampf",
     "geschwindigkeit",
     "technik",
     "ausdauer",
@@ -13,7 +16,13 @@ const labelsClasses = [
     "kraftausdauer",
   ];
 
-const Seasonmodal = () => {
+  const weeksInMs = 604800000;
+
+const Seasonmodal = ({titleSeason, setTitleSeason, endDateSeason, setEndDateSeason, startDateSeason, setStartDateSeason,
+                      durationSession, setDurationSession, lastTrainingDay, setLastTrainingDay,
+                      numberOfSessions, setNumberOfSessions, durationLastTrainingSession, setDurationLastTrainingSession,
+                      endDateSeasonMilliSeconds, setEndDateSeasonMilliSeconds, startDateSeasonMilliSeconds, setStartDateSeasonMilliSeconds,
+                      lastTrainingDayMilliSeconds, setLastTrainingDayMilliSeconds}) => {
     const formRef = useRef();
 
     const {
@@ -21,16 +30,8 @@ const Seasonmodal = () => {
         daySelected,
         dispatchCalEvent,
         selectedEvent,
+        setShowSessionModal,
       } = useContext(GlobalContext);
-
-    const [title, setTitle] = useState(selectedEvent ? selectedEvent.title : "");
-
-    const [start, setStart] = useState(selectedEvent ? selectedEvent.start : "");
-
-    const [duration, setDuration] = useState(selectedEvent ? selectedEvent.duration : "");
-
-    const [daysOff, setDaysOff] = useState(selectedEvent ? selectedEvent.daysOff : "");
-
 
     const [selectedLabel, setSelectedLabel] = useState(selectedEvent
         ? labelsClasses.find((lbl) => lbl === selectedEvent.label)
@@ -57,31 +58,60 @@ const Seasonmodal = () => {
         }  
       }
     //wichtig für DB
-      function handleSubmit(e) {
+      async function handleSubmit(e) {
         e.preventDefault();
-        /*
-        const form = formRef.current;
+        console.log("Titel: " + titleSeason);
+        console.log("Final Contest: " + endDateSeason);
+        console.log("Startdate: " + startDateSeason);
+        console.log("Last Trainingday: " + lastTrainingDay);
+        console.log("Duration Session: " + durationSession); // noch in Ms umwandeln
+        setDurationSession(durationSession*weeksInMs);
+
+        const dateEnd = new Date(endDateSeason).getTime();
+        console.log(dateEnd);
+        setEndDateSeasonMilliSeconds(dateEnd);
+        
+        const dateEndTraining = new Date(lastTrainingDay).getTime();
+        console.log(dateEndTraining);
+        setLastTrainingDayMilliSeconds(dateEndTraining);
+
+        const dateStart = new Date(startDateSeason).getTime();
+        console.log(dateStart);
+        setStartDateSeasonMilliSeconds(dateStart);
+
+        const differenceInMilliseconds = dateEndTraining - dateStart;
+        setNumberOfSessions((differenceInMilliseconds / (1000 * 60 * 60 * 24)/(7*durationSession)));
+        console.log("Number of Sessions: " + numberOfSessions);
+
+
+        if(numberOfSessions % 1 != 0){
+            setDurationLastTrainingSession((Math.round((numberOfSessions % 1)*durationSession))*weeksInMs);//noch in Ms umwandeln
+        }else {
+            setDurationLastTrainingSession(durationSession*weeksInMs); //noch in Ms umwandeln
+        }
+        console.log("Duration last Session: " + durationLastTrainingSession);
+
         const formData = {
-            id: selectedEvent ? selectedEvent.id : Date.now(),
-            title: form.title.value,
-            description: form.description.value,
-            label: selectedLabel,
-            day: daySelected.valueOf()
+            id: uuid4(),
+            title: titleSeason,
+            finalContestDate: endDateSeasonMilliSeconds,
+            finalTrainingDate:lastTrainingDayMilliSeconds,
+            startDate: startDateSeasonMilliSeconds,
+            durationSession: durationSession,
+            numberOfSessions: numberOfSessions,
+            durationLastSession: durationLastTrainingSession
+
             
         }
         console.log(formData);
-        */
-        /*
         const config = {
-            url: "http://localhost:3002/event",
+            url: "http://localhost:3002/postSeasonEvent",
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
             data: JSON.stringify(formData)
         }
-        */
-        /*
         try{
             const response = await axios(config);
             console.log(response);
@@ -89,13 +119,6 @@ const Seasonmodal = () => {
             if(response.status !== 201){
                 throw new Error('failed to register');
             }
-
-            if (selectedEvent) {
-                dispatchCalEvent({ type: "update", payload: response });
-              } else {
-                dispatchCalEvent({ type: "push", payload: response });
-              }
-              setShowEventModal(false);
         }
         catch(error){
             if(error.response.status === 429) {
@@ -105,25 +128,11 @@ const Seasonmodal = () => {
             
             console.log(error);
         }
-        */
-        const calendarEvent = {
-          title,
-          start,
-          duration,
-          daysOff,
-          label: selectedLabel,
-          day: daySelected.valueOf(),
-          id: selectedEvent ? selectedEvent.id : Date.now(),
-        };
-        
-        if (selectedEvent) {
-          dispatchCalEvent({ type: "update", payload: calendarEvent });
-        } else {
-          dispatchCalEvent({ type: "push", payload: calendarEvent });
         }
         setShowSeasonModal(false);
-        
+        setShowSessionModal(true);
       }
+      
       return(
         <div className="overlaycontainer">
             <form className="formcontainer_eventmodal">
@@ -165,21 +174,24 @@ const Seasonmodal = () => {
                          type="text"
                          name="title" 
                          placeholder="Add Title" 
-                         value={title} 
+                         value={titleSeason} 
                          required 
-                         onChange={(e) => setTitle(e.target.value)}/>
-
+                         onChange={(e) => setTitleSeason(e.target.value)}/>
+                        
                         <div className='datecontainer'>
                             <span className="spanicon" onClick={() => setShowSeasonModal(false)}>
                                 <FontAwesomeIcon icon={faClock} />
                             </span>
-
                             Date of Final Contest:
                             <br/>
-
-                            {daySelected.format("dddd, MMMM DD")}
-
+                            <input className="middleinput1"
+                            type="date"
+                            name="end" 
+                            value={endDateSeason} 
+                            required 
+                            onChange={(e) => setEndDateSeason(e.target.value)}/>
                         </div>
+                        
 
                         <div className='datecontainer'>
                             <span className="spanicon" onClick={() => setShowSeasonModal(false)}>
@@ -192,9 +204,25 @@ const Seasonmodal = () => {
                             <input className="middleinput1"
                             type="date"
                             name="start" 
-                            value={start} 
+                            value={startDateSeason} 
                             required 
-                            onChange={(e) => setStart(e.target.value)}/>
+                            onChange={(e) => setStartDateSeason(e.target.value)}/>
+                        </div>
+
+                        <div className='datecontainer'>
+                            <span className="spanicon" onClick={() => setShowSeasonModal(false)}>
+                                <FontAwesomeIcon icon={faClock} />
+                            </span>
+
+                            Last Day of Training:
+                            <br/>
+
+                            <input className="middleinput1"
+                            type="date"
+                            name="start" 
+                            value={lastTrainingDay} 
+                            required 
+                            onChange={(e) => setLastTrainingDay(e.target.value)}/>
                         </div>
 
                         <div className='datecontainer'>
@@ -210,32 +238,10 @@ const Seasonmodal = () => {
                             min="1"
                             max="6"
                             name="duration" 
-                            value={duration} 
+                            value={durationSession} 
                             required 
-                            onChange={(e) => setDuration(e.target.value)}/>
+                            onChange={(e) => setDurationSession(e.target.value)}/>
                         </div>
-
-                        <div className='datecontainer'>
-                            <span className="spanicon" onClick={() => setShowSeasonModal(false)}>
-                                <FontAwesomeIcon icon={faClock} />
-                            </span>
-
-                            Days off before final contest:
-                            <br/>
-
-                            <input className="middleinput1"
-                            type="number"
-                            min="1"
-                            max="6"
-                            name="daysoff" 
-                            value={daysOff} 
-                            required 
-                            onChange={(e) => setDaysOff(e.target.value)}/>
-                        </div>
-
-                        
-                        
-                        
 
                         <div className='bookmarkcontainer'>
 

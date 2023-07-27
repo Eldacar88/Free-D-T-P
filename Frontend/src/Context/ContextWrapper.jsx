@@ -57,7 +57,7 @@ const ContextWrapper = (props) => {
   function  initEvents() {   
     const storageEvents = localStorage.getItem("savedEvents"); // aus DB holen
     const parsedEvents = storageEvents ? JSON.parse(storageEvents) : [];
-    console.log(parsedEvents);
+    //console.log(parsedEvents);
     return parsedEvents;
   }
 
@@ -72,6 +72,7 @@ const ContextWrapper = (props) => {
     const [labels, setLabels] = useState([]);
     const [savedEvents, dispatchCalEvent] = useReducer(
       savedEventsReducer,[], initEvents);
+
 
       const filteredEvents = useMemo(() => {
         return savedEvents.filter((evt) =>
@@ -157,7 +158,8 @@ const ContextWrapper = (props) => {
           showSeasonModal,
           setShowSeasonModal,
           showSessionModal,
-          setShowSessionModal
+          setShowSessionModal,
+          
             }}>
             {props.children}
         </GlobalContext.Provider>  

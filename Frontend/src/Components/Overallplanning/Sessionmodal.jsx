@@ -5,8 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faClock, faXmark, faBarsStaggered, faBookmark, faCheck, faTrash} from '@fortawesome/free-solid-svg-icons';
 import Form from 'react-bootstrap/Form';
 
+import Trainingtypeselection from "./Trainingtype/Trainingstypeselection";
+
 const labelsClasses = [
-    "statik",
+    "wettkampf",
     "geschwindigkeit",
     "technik",
     "ausdauer",
@@ -14,7 +16,11 @@ const labelsClasses = [
     "kraftausdauer",
   ];
 
-const Sessionmodal = () => {
+const Sessionmodal = ({titleSeason, setTitleSeason, endDateSeason, setEndDateSeason, startDateSeason, setStartDateSeason,
+                    durationSession, setDurationSession, lastTrainingDay, setLastTrainingDay,
+                    numberOfSessions, setNumberOfSessions, durationLastTrainingSession, setDurationLastTrainingSession,
+                    endDateSeasonMilliSeconds, setEndDateSeasonMiliSeconds, startDateSeasonMilliSeconds, setStartDateSeasonMiliSeconds,
+                    lastTrainingDayMilliSeconds, setLastTrainingDayMilliSeconds}) => {
     const formRef = useRef();
 
     const {
@@ -163,44 +169,10 @@ const Sessionmodal = () => {
                          required 
                          onChange={(e) => setTitle(e.target.value)}/>
 
-                        <div className='datecontainer'>
-                            <span className="spanicon" onClick={() => setShowSessionModal(false)}>
-                                <FontAwesomeIcon icon={faBars} />
-                            </span>
 
-                            1.Session:
-                            <br/>
+                        <Trainingtypeselection session={session} setSession={setSession} setShowSessionModal={setShowSessionModal}/>
 
-                            <Form.Select aria-label="Default select example" name="session1" value={session}>
-                                <option>Select Trainingtype</option>
-                                <option value="Statik">Statik</option>
-                                <option value="Geschwindigkeit">Geschwindigkeit</option>
-                                <option value="Technik">Technik</option>
-                                <option value="Kraft">Kraft</option>
-                                <option value="Ausdauer">Ausdauer</option>
-                                <option value="Kraftausdauer">Ausdauer</option>
-                            </Form.Select>
-                        </div>
-
-                        <div className='datecontainer'>
-                            <span className="spanicon" onClick={() => setShowSessionModal(false)}>
-                                <FontAwesomeIcon icon={faBars} />
-                            </span>
-
-                            2.Session:
-                            <br/>
-
-                            <Form.Select aria-label="Default select example" name="session2" value={session}>
-                                <option>Select Trainingtype</option>
-                                <option value="Statik">Statik</option>
-                                <option value="Geschwindigkeit">Geschwindigkeit</option>
-                                <option value="Technik">Technik</option>
-                                <option value="Kraft">Kraft</option>
-                                <option value="Ausdauer">Ausdauer</option>
-                                <option value="Kraftausdauer">Ausdauer</option>
-                            </Form.Select>
-                        </div>
-
+                        
                         <div className='bookmarkcontainer'>
 
                         

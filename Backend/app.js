@@ -124,6 +124,64 @@ const freeDTPUserScheme = new mongoose.Schema({
 
 const FreeDTPUser = mongoose.model('freedtpuser', freeDTPUserScheme);
 
+const seasonScheme = new mongoose.Schema({
+  title:{
+    type: String,
+    required: true,
+    minlegth: 3,
+    maxlength: 50,
+  },
+
+  id: {
+    type: String,
+    required: true
+  },
+
+  finalContestDate:{
+    type: String,
+    required: true,
+    minlegth: 1,
+    maxlength: 50,
+  },
+
+  finalTrainingDate:{
+    type: String,
+    required: true,
+    minlegth: 1,
+    maxlength: 50,
+  },
+
+  startDate:{
+    type: String,
+    required: true,
+    minlegth: 1,
+    maxlength: 50,
+  },
+
+  durationSession:{
+    type: String,
+    required: true,
+    minlegth: 1,
+    maxlength: 50,
+  },
+
+  numberOfSessions:{
+    type: String,
+    required: true,
+    minlegth: 1,
+    maxlength: 50,
+  },
+
+  durationLastSession:{
+    type: String,
+    required: true,
+    minlegth: 1,
+    maxlength: 50,
+  },
+})
+
+const SeasonEvent = mongoose.model('seasonevent', seasonScheme);
+
 app.use(express.json());
 
 app.use(async function (req, res, next) {
@@ -177,20 +235,46 @@ app.get('/getEvent', async(req, res) => {
       res.status(500).send('Error fetching data from MongoDB');
   }
   
-/*
-  await Event.find({}, (err, items) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send('Error fetching data from MongoDB');
-    } else {
-      res.status(200).send({items, message: "Fetching of data was successful"});
-    }
-  });*/
+})
+
+app.put('/updateEvent', async(req, res) => {
+  const {title, description, label, day, id, realId } = req.body;
+  const updatedData = req.body;
+  const existsEvent = await Event.findOne({title});
+  const selectedDay = day;
+
+  try{
+  if(existsEvent.day == selectedDay){
+    await Event.updateOne(
+      {title: title},
+      {$set: updatedData});
+  } 
+    res.status(200).send(`Event updated succesfully.`);
+  }
+  catch(error){
+    res.status(500).send({message: "Something went wrong"});
+  }
+})
+
+app.get('/getUpdatedEvent', async(req, res) => {
+  const {title, description, label, day, id, realId } = req.body;
+  const existsEvent = await Event.findOne({title});
+  const selectedDay = day;
+
+  try{
+    if(existsEvent.day == selectedDay){
+      const eventData = await Event.findOne({title: title});
+      res.status(200).send({eventData, message: "Fetching of data was successful"});
+    } 
+    
+  }
+  catch(error){
+    res.status(500).send({message: "Something went wrong"});
+  }
 })
 
 app.delete('/deleteEvent', async(req, res) => {
   const {title, description, label, day, id, realId} = req.body;
-
   const existsEvent = await Event.findOne({title});
   const selectedDay = day;
 
@@ -203,6 +287,25 @@ app.delete('/deleteEvent', async(req, res) => {
   catch(error){
     res.status(500).send({message: "Something went wrong"});
   }
+})
+
+app.post('/postSeasonEvent', async(req,res) => {
+  const {title, id, finalContestDate, finalTrainingDate, startDate, durationSession, numberOfSessions, durationLastSession } = req.body;
+
+  if(!title ||!id || !finalContestDate || !finalTrainingDate || !startDate || !durationSession || !numberOfSessions || !durationLastSession){
+    return res.status(404).send({message: "Please fill out all fields."});
+  }
+
+  const seasonEvent = new SeasonEvent({title, id, finalContestDate, finalTrainingDate, startDate,
+                                       durationSession, numberOfSessions, durationLastSession});
+  
+  try{
+      await SeasonEvent.create(seasonEvent);
+      res.status(201).send({message: "Event succesfully created."});
+  }
+  catch(error){
+    res.status(500).send({message: "Something went wrong"});
+  }                                    
 })
 
 app.post('/register', limit, async(req,res)=>{

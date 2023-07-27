@@ -54,6 +54,71 @@ const Eventmodal = () => {
         }  
       }
 
+      async function postEvent(e) {
+        
+
+        const formData = {
+            id: selectedEvent ? selectedEvent.id : Date.now(),
+            realId: uuid4(),
+            title,
+            description,
+            label: selectedLabel,
+            day: daySelected.valueOf()
+        }
+
+        const config = {
+            url: "http://localhost:3002/postEvent",
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: formData
+        }
+        
+        try{
+            const response = await axios(config);
+            console.log(response);
+
+            if(response.status !== 201){
+                throw new Error('failed to create event');
+            }
+        }
+        catch(error){
+            console.log(error.response.data.message);
+        }
+      }
+
+      async function updateEvent(e) {
+        e.preventDefault();
+        const formData = {
+            id: selectedEvent ? selectedEvent.id : Date.now(),
+            realId: uuid4(),
+            title,
+            description,
+            label: selectedLabel,
+            day: daySelected.valueOf()
+        }
+        const config = {
+            url: "http://localhost:3002/updateEvent",
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: formData
+        }
+        try{
+            const response = await axios(config);
+            console.log(response);
+
+            if(response.status !== 200){
+                throw new Error('failed to update event');
+            }
+        }
+        catch(error){
+            console.log(error.response.data.message);
+        }
+      }
+
       async function handleSubmit(e) {
         e.preventDefault();
         
@@ -115,6 +180,94 @@ const Eventmodal = () => {
         }
         setShowEventModal(false);
       }
+    
+
+      /*async function handleSubmit(e) {
+        e.preventDefault();
+                      
+        /*const calendarEvent = {
+          title,
+          description,
+          label: selectedLabel,
+          day: daySelected.valueOf(),
+          id: selectedEvent ? selectedEvent.id : Date.now(),
+          realId: uuid4(),
+        };
+        
+        if (selectedEvent) {
+            updateEvent();
+
+            const formData = {
+                id: selectedEvent ? selectedEvent.id : Date.now(),
+                realId: uuid4(),
+                title,
+                description,
+                label: selectedLabel,
+                day: daySelected.valueOf()
+            }
+    
+            const config = {
+                url: "http://localhost:3002/getUpdatedEvent",
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: formData
+            }
+            
+            try{
+                const response = await axios(config);
+                //console.log(response);    
+                if(response.status !== 200){
+                    throw new Error('failed load updated event');
+                }
+
+                const updatedEvents ={
+                    title: response.data.title,
+                    description: response.data.description,
+                    label: response.data.label,
+                    day:response.data.day,
+                    id: response.data.id,
+                    realId: response.data.realId,
+                }
+
+                dispatchCalEvent({ type: "update", payload: updatedEvents});
+            }
+            catch(error){
+                console.log(error.response.data.message);
+            }
+
+            //dispatchCalEvent({ type: "update", payload: calendarEvent });
+        } else {
+
+            postEvent();
+
+            try {
+                const response = await axios('http://localhost:3002/getEvent');
+                console.log(response.data);
+                const postedEvents ={
+                    title: response.data.title,
+                    description: response.data.description,
+                    label: response.data.label,
+                    day:response.data.day,
+                    id: response.data.id,
+                    realId: response.data.realId,
+                }
+
+                
+                dispatchCalEvent({ type: "push", payload: response.data });
+  
+              } catch (error) {
+                console.error(error);
+              }
+        
+
+          //dispatchCalEvent({ type: "push", payload: calendarEvent });
+        }
+        setShowEventModal(false);
+      }*/
+
+      
 
       async function deleteEvent(e) {
         
