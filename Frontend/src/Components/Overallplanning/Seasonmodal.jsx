@@ -18,11 +18,7 @@ const labelsClasses = [
 
   const weeksInMs = 604800000;
 
-const Seasonmodal = ({titleSeason, setTitleSeason, endDateSeason, setEndDateSeason, startDateSeason, setStartDateSeason,
-                      durationSession, setDurationSession, lastTrainingDay, setLastTrainingDay,
-                      numberOfSessions, setNumberOfSessions, durationLastTrainingSession, setDurationLastTrainingSession,
-                      endDateSeasonMilliSeconds, setEndDateSeasonMilliSeconds, startDateSeasonMilliSeconds, setStartDateSeasonMilliSeconds,
-                      lastTrainingDayMilliSeconds, setLastTrainingDayMilliSeconds}) => {
+const Seasonmodal = () => {
     const formRef = useRef();
 
     const {
@@ -31,6 +27,26 @@ const Seasonmodal = ({titleSeason, setTitleSeason, endDateSeason, setEndDateSeas
         dispatchCalEvent,
         selectedEvent,
         setShowSessionModal,
+        titleSeason,
+        setTitleSeason,
+        endDateSeason,
+        setEndDateSeason,
+        endDateSeasonMilliSeconds,
+        setEndDateSeasonMilliSeconds,
+        startDateSeason, 
+        setStartDateSeason,
+        startDateSeasonMilliSeconds,
+        setStartDateSeasonMilliSeconds,
+        numberOfSessions,
+        setNumberOfSessions,
+        durationSession,
+        setDurationSession,
+        lastTrainingDay, 
+        setLastTrainingDay,
+        lastTrainingDayMilliSeconds,
+        setLastTrainingDayMilliSeconds,
+        durationLastTrainingSession, 
+        setDurationLastTrainingSession,
       } = useContext(GlobalContext);
 
     const [selectedLabel, setSelectedLabel] = useState(selectedEvent
@@ -65,19 +81,24 @@ const Seasonmodal = ({titleSeason, setTitleSeason, endDateSeason, setEndDateSeas
         console.log("Startdate: " + startDateSeason);
         console.log("Last Trainingday: " + lastTrainingDay);
         console.log("Duration Session: " + durationSession); // noch in Ms umwandeln
+        console.log("Label:" + selectedLabel);
+
         setDurationSession(durationSession*weeksInMs);
 
         const dateEnd = new Date(endDateSeason).getTime();
         console.log(dateEnd);
         setEndDateSeasonMilliSeconds(dateEnd);
+        console.log(endDateSeasonMilliSeconds);
         
         const dateEndTraining = new Date(lastTrainingDay).getTime();
         console.log(dateEndTraining);
         setLastTrainingDayMilliSeconds(dateEndTraining);
+        console.log(lastTrainingDayMilliSeconds);
 
         const dateStart = new Date(startDateSeason).getTime();
         console.log(dateStart);
         setStartDateSeasonMilliSeconds(dateStart);
+        console.log(startDateSeasonMilliSeconds);
 
         const differenceInMilliseconds = dateEndTraining - dateStart;
         setNumberOfSessions((differenceInMilliseconds / (1000 * 60 * 60 * 24)/(7*durationSession)));

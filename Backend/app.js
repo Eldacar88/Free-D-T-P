@@ -214,7 +214,7 @@ app.post('/postEvent', async(req, res) =>{
     }
 
     const event = new Event({title, description, label, day, id, realId});
-
+    console.log(event);
     try{
         await Event.create(event);
         res.status(201).send({message: "Event succesfully created."});
@@ -224,17 +224,30 @@ app.post('/postEvent', async(req, res) =>{
     }
 })
 
-app.get('/getEvent', async(req, res) => {
+/*app.get('/getEvent', async(req, res) => {
   try{
     const eventData = await Event.find({});
-    res.status(200).send({eventData, message: "Fetching of data was successful"});
+    console.log(eventData);
+    res.status(200).send({eventData, message: "Get Fetching of data was successful"});
   }
   catch(error)
   {
     console.log(err);
       res.status(500).send('Error fetching data from MongoDB');
+  } 
+})*/
+
+app.get('/getEvent', async(req, res) => {
+  try{
+    const eventData = await Event.find({}).exec();
+    //console.log(eventData);
+    res.json(eventData);
   }
-  
+  catch(error)
+  {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Failed to fetch data' });
+  } 
 })
 
 app.put('/updateEvent', async(req, res) => {
@@ -257,16 +270,20 @@ app.put('/updateEvent', async(req, res) => {
 })
 
 app.get('/getUpdatedEvent', async(req, res) => {
-  const {title, description, label, day, id, realId } = req.body;
-  const existsEvent = await Event.findOne({title});
-  const selectedDay = day;
+    const title = req.query.title;
+    const description = req.query.description;
+    const label = req.query.label;
+    const day = req.query.day;
+    const id = req.query.id;
+    const realId = req.query.realId;
+    const existsEvent = await Event.findOne({title});
+    const selectedDay = day;
 
   try{
     if(existsEvent.day == selectedDay){
-      const eventData = await Event.findOne({title: title});
-      res.status(200).send({eventData, message: "Fetching of data was successful"});
+      const eventData = await Event.findOne({title: title}).exec();
+      res.json(eventData);
     } 
-    
   }
   catch(error){
     res.status(500).send({message: "Something went wrong"});

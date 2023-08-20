@@ -16,7 +16,7 @@ const Createseasonbutton = ({userRole, setUserRole}) => {
             }
                 
                 >
-                <img src={plusImg} alt="create_event"/>
+                <img src={plusImg} alt="create_season"/>
                 <span> Create New Season</span>
             </button>
         </div>

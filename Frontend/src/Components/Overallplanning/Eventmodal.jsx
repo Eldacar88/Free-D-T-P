@@ -5,6 +5,7 @@ import React, {useContext, useState, useRef} from 'react';
 import GlobalContext from "../../Context/GlobalContext";
 import axios from 'axios';
 import { uuid4 } from "uuid4";
+import dayjs from "dayjs";
 
 const labelsClasses = [
     "wettkampf",
@@ -22,7 +23,10 @@ const Eventmodal = () => {
         setShowEventModal,
         daySelected,
         dispatchCalEvent,
+        savedEvents,
         selectedEvent,
+        testEvent,
+        setTestEvent
       } = useContext(GlobalContext);
 
     const [title, setTitle] = useState(selectedEvent ? selectedEvent.title : "");
@@ -54,223 +58,157 @@ const Eventmodal = () => {
         }  
       }
 
-      async function postEvent(e) {
-        
-
-        const formData = {
-            id: selectedEvent ? selectedEvent.id : Date.now(),
-            realId: uuid4(),
-            title,
-            description,
-            label: selectedLabel,
-            day: daySelected.valueOf()
-        }
-
-        const config = {
-            url: "http://localhost:3002/postEvent",
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: formData
-        }
-        
-        try{
-            const response = await axios(config);
-            console.log(response);
-
-            if(response.status !== 201){
-                throw new Error('failed to create event');
-            }
-        }
-        catch(error){
-            console.log(error.response.data.message);
-        }
-      }
-
-      async function updateEvent(e) {
-        e.preventDefault();
-        const formData = {
-            id: selectedEvent ? selectedEvent.id : Date.now(),
-            realId: uuid4(),
-            title,
-            description,
-            label: selectedLabel,
-            day: daySelected.valueOf()
-        }
-        const config = {
-            url: "http://localhost:3002/updateEvent",
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: formData
-        }
-        try{
-            const response = await axios(config);
-            console.log(response);
-
-            if(response.status !== 200){
-                throw new Error('failed to update event');
-            }
-        }
-        catch(error){
-            console.log(error.response.data.message);
-        }
-      }
-
       async function handleSubmit(e) {
         e.preventDefault();
-        
-        const form = formRef.current;
-        const formData = {
-            id: selectedEvent ? selectedEvent.id : Date.now(),
-            realId: uuid4(),
-            title,
-            description,
-            label: selectedLabel,
-            day: daySelected.valueOf()
-        }
-
-        const config = {
-            url: "http://localhost:3002/postEvent",
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: formData
-        }
-        
-        try{
-            const response = await axios(config);
-            console.log(response);
-
-            if(response.status !== 201){
-                throw new Error('failed to create event');
-            }
-
-        }
-        catch(error){
-            console.log(error.response.data.message);
-        }
-
-        //DB-Part
-        /*
-        if (selectedEvent) {
-            dispatchCalEvent({ type: "update", payload: formData });
-          } else {
-            dispatchCalEvent({ type: "push", payload: formData });
-          }
-          setShowEventModal(false);*/
-
-        
-        const calendarEvent = {
-          title,
-          description,
-          label: selectedLabel,
-          day: daySelected.valueOf(),
-          id: selectedEvent ? selectedEvent.id : Date.now(),
-          realId: uuid4(),
-        };
-        
-        if (selectedEvent) {
-          dispatchCalEvent({ type: "update", payload: calendarEvent });
-        } else {
-          dispatchCalEvent({ type: "push", payload: calendarEvent });
-        }
-        setShowEventModal(false);
-      }
-    
-
-      /*async function handleSubmit(e) {
-        e.preventDefault();
-                      
-        /*const calendarEvent = {
-          title,
-          description,
-          label: selectedLabel,
-          day: daySelected.valueOf(),
-          id: selectedEvent ? selectedEvent.id : Date.now(),
-          realId: uuid4(),
-        };
-        
-        if (selectedEvent) {
-            updateEvent();
-
-            const formData = {
-                id: selectedEvent ? selectedEvent.id : Date.now(),
-                realId: uuid4(),
+              const calendarEvent = {
                 title,
                 description,
                 label: selectedLabel,
-                day: daySelected.valueOf()
-            }
-    
-            const config = {
-                url: "http://localhost:3002/getUpdatedEvent",
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                data: formData
-            }
-            
-            try{
-                const response = await axios(config);
-                //console.log(response);    
-                if(response.status !== 200){
-                    throw new Error('failed load updated event');
+                day: daySelected.valueOf(),
+                id: selectedEvent ? selectedEvent.id : Date.now(),
+                realId: uuid4(),
+              };
+
+              if (selectedEvent) {
+                //updateEvent
+                const formData = {
+                    id: selectedEvent ? selectedEvent.id : Date.now(),
+                    realId: uuid4(),
+                    title,
+                    description,
+                    label: selectedLabel,
+                    day: daySelected.valueOf()
+                }
+                const configUpdate = {
+                    url: "http://localhost:3002/updateEvent",
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    data: formData
+                }
+                try{
+                    const response = await axios(configUpdate);
+                    console.log(response.data);
+                    
+                }
+                catch(error){
+                    console.log(error.response.data.message);
                 }
 
-                const updatedEvents ={
-                    title: response.data.title,
-                    description: response.data.description,
-                    label: response.data.label,
-                    day:response.data.day,
-                    id: response.data.id,
-                    realId: response.data.realId,
+                try{
+                    const response = await axios.get('http://localhost:3002/getUpdatedEvent', {params: formData,});
+                    const responseDataArray = Array.isArray(response.data) ? response.data : [response.data];
+
+                    var updatedTitleConverted;
+                    var updatedDescriptionConverted;
+                    var updatedLabelConverted;
+                    var updatedDayConverted;
+                    var updatedIdConverted;
+                    var updatedRealIdConverted;
+
+                    responseDataArray.forEach((item, index) => {
+                        //console.log(`Item ${index}:`, item);
+                        updatedTitleConverted = item.title;
+                        updatedDescriptionConverted = item.description;
+                        updatedLabelConverted = item.label;
+                        updatedDayConverted = parseInt(item.day, 10);
+                        updatedIdConverted = parseInt(item.id,10);
+                        updatedRealIdConverted = item.realId;    
+                    });
+
+                    const updatedEvents = {
+                        title: updatedTitleConverted,
+                        description: updatedDescriptionConverted,
+                        label: updatedLabelConverted,
+                        day: updatedDayConverted,
+                        id: updatedIdConverted,
+                        realId: updatedRealIdConverted,  
+                    }
+                    //console.log(updatedEvents);
+                    
+                    dispatchCalEvent({ type: "update", payload: updatedEvents });
                 }
+                catch(error){
 
-                dispatchCalEvent({ type: "update", payload: updatedEvents});
-            }
-            catch(error){
-                console.log(error.response.data.message);
-            }
-
-            //dispatchCalEvent({ type: "update", payload: calendarEvent });
-        } else {
-
-            postEvent();
-
-            try {
-                const response = await axios('http://localhost:3002/getEvent');
-                console.log(response.data);
-                const postedEvents ={
-                    title: response.data.title,
-                    description: response.data.description,
-                    label: response.data.label,
-                    day:response.data.day,
-                    id: response.data.id,
-                    realId: response.data.realId,
                 }
-
                 
-                dispatchCalEvent({ type: "push", payload: response.data });
-  
-              } catch (error) {
-                console.error(error);
-              }
+              } else {
+                //Postevent
+                const form = formRef.current;
+                const formData = {
+                    id: selectedEvent ? selectedEvent.id : Date.now(),
+                    realId: uuid4(),
+                    title,
+                    description,
+                    label: selectedLabel,
+                    day: daySelected.valueOf()
+                }
+
+                const configPost = {
+                    url: "http://localhost:3002/postEvent",
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    data: formData
+                }
         
+                try{
+                    const response = await axios(configPost);
+                    console.log(response);
 
-          //dispatchCalEvent({ type: "push", payload: calendarEvent });
-        }
+                    if(response.status !== 201){
+                        throw new Error('failed to create event');
+                    }
+                }
+                catch(error){
+                    console.log(error.response.data.message);
+                }
+
+                //getEvent
+                try {
+                    const response = await axios.get('http://localhost:3002/getEvent');
+                    
+                    const responseDataArray = Array.isArray(response.data) ? response.data : [response.data];
+
+                    var titleConverted;
+                    var descriptionConverted;
+                    var labelConverted;
+                    var dayConverted;
+                    var idConverted;
+                    var realIdConverted;
+
+                    responseDataArray.forEach((item, index) => {
+
+                        titleConverted = item.title;
+                        descriptionConverted = item.description;
+                        labelConverted = item.label;
+                        dayConverted = parseInt(item.day, 10);
+                        idConverted = parseInt(item.id,10);
+                        realIdConverted = item.realId;    
+                    });
+
+                    const postedEvents = {
+                        title: titleConverted,
+                        description: descriptionConverted,
+                        label: labelConverted,
+                        day:dayConverted,
+                        id: idConverted,
+                        realId: realIdConverted,  
+                    }
+                        dispatchCalEvent({ type: "push", payload: postedEvents });
+
+                    }
+                    catch (error) {
+                        console.error(error);
+                    }
+          } 
         setShowEventModal(false);
-      }*/
-
+      }
       
 
       async function deleteEvent(e) {
-        
         const formData = {
             id: selectedEvent ? selectedEvent.id : Date.now(),
             realId: uuid4(),
@@ -399,6 +337,7 @@ const Eventmodal = () => {
                     <button
                         type="submit"
                         onClick={handleSubmit}
+                        
                         className="footerbutton">
                         Save
                     </button>

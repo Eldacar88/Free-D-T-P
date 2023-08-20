@@ -5,6 +5,7 @@ import Labels from "./Labels";
 import Hidecomponent from "../Hide/Hidecomponent";
 import Createseasonbutton from "./Createseasonbutton";
 import Createsessionbutton from "./Createsessionbutton";
+import Loadbutton from "./Loadbutton";
 import React from "react";
 
 const Sidebar = ({userRole, setUserRole}) => {
@@ -14,6 +15,7 @@ const Sidebar = ({userRole, setUserRole}) => {
             <Createseasonbutton userRole={userRole} setUserRole={setUserRole}/>
             <Createsessionbutton userRole={userRole} setUserRole={setUserRole}/>
             <Smallcalendar/>
+            <Loadbutton/>
             <Labels/>
             
         </aside>

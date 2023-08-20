@@ -16,11 +16,7 @@ const labelsClasses = [
     "kraftausdauer",
   ];
 
-const Sessionmodal = ({titleSeason, setTitleSeason, endDateSeason, setEndDateSeason, startDateSeason, setStartDateSeason,
-                    durationSession, setDurationSession, lastTrainingDay, setLastTrainingDay,
-                    numberOfSessions, setNumberOfSessions, durationLastTrainingSession, setDurationLastTrainingSession,
-                    endDateSeasonMilliSeconds, setEndDateSeasonMiliSeconds, startDateSeasonMilliSeconds, setStartDateSeasonMiliSeconds,
-                    lastTrainingDayMilliSeconds, setLastTrainingDayMilliSeconds}) => {
+const Sessionmodal = () => {
     const formRef = useRef();
 
     const {
@@ -28,6 +24,26 @@ const Sessionmodal = ({titleSeason, setTitleSeason, endDateSeason, setEndDateSea
         daySelected,
         dispatchCalEvent,
         selectedEvent,
+        titleSeason,
+        setTitleSeason,
+        endDateSeason,
+        setEndDateSeason,
+        endDateSeasonMilliSeconds,
+        setEndDateSeasonMilliSeconds,
+        startDateSeason, 
+        setStartDateSeason,
+        startDateSeasonMilliSeconds,
+        setStartDateSeasonMilliSeconds,
+        numberOfSessions,
+        setNumberOfSessions,
+        durationSession,
+        setDurationSession,
+        lastTrainingDay, 
+        setLastTrainingDay,
+        lastTrainingDayMilliSeconds,
+        setLastTrainingDayMilliSeconds,
+        durationLastTrainingSession, 
+        setDurationLastTrainingSession,
       } = useContext(GlobalContext);
 
       const [title, setTitle] = useState(selectedEvent ? selectedEvent.title : "");

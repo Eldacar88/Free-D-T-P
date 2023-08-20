@@ -83,15 +83,15 @@ const Resetpage = ({text,resetNumber,setResetNumber,setResetAllowed,resetAllowed
                 //showNotification(response.data.message,"normal");
                 console.log(response);
                 
-                setTimeout(() => {
-                setEmailToken("");
-                localStorage.removeItem("resetEmail");
+                //setTimeout(() => {
+                //setEmailToken("");
+                //localStorage.removeItem("resetEmail");
                 navigator("/login");
-                }, 1500)
+                //}, 1500)
 
             }   catch (error) {
                 //showNotification(error.response.data.message,"red");
-                localStorage.removeItem("resetEmail");
+                //localStorage.removeItem("resetEmail");
                 navigator("/login");
                 console.log(error);
             }
