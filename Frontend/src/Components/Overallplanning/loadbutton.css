@@ -3,7 +3,7 @@ img{
     height: 3vh;
 }
 
-.eventbutton{
+.load_button{
     border: 2px solid lightgray;
     border-radius: 20px;
     display: flex;
@@ -11,6 +11,6 @@ img{
     width: 100%;
 }
 
-.eventbutton:hover{
+.load_button:hover{
     border: 3px solid lightgray;
 }

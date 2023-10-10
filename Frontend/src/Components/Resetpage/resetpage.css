@@ -1,16 +1,13 @@
-
-
-.resettext{
+.resetpage_resettext{
     margin-bottom: 10%;
 }
-
 
 #exampleFormControlInput1{
     width: 100%;
     margin-bottom: 10%;
 }
 
-.passwordsurround{
+.resetpage_surround_password{
     width: 100vw;
     height: 90vh;
     display: flex;
@@ -18,7 +15,7 @@
     align-items: center;
 }
 
-.formcontainer{
+.resetpage_formcontainer{
     color: white;
     background-color: rgb(116, 149, 209);
     padding: 10px;

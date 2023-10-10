@@ -7,9 +7,9 @@ import Month from "./Month";
 import Eventmodal from "./Eventmodal";
 import Seasonmodal from "./Seasonmodal";
 import Sessionmodal from "./Sessionmodal";
+import TestSeason from "./TestSeason";
 import { getMonth } from "./util";
 import GlobalContext from "../../Context/GlobalContext";
-
 
 const Newoverallplanning = ({userRole, setUserRole}) => {
 
@@ -39,10 +39,10 @@ const Newoverallplanning = ({userRole, setUserRole}) => {
             setLastTrainingDayMilliSeconds,
             durationLastTrainingSession, 
             setDurationLastTrainingSession,
-        } = useContext(GlobalContext);
-
+            dispatchCalEvent,
+            savedEvents
+        } = useContext(GlobalContext); 
     
-
     useEffect(() => {
         setCurrentMonth(getMonth(monthIndex))
       }, [monthIndex])
@@ -50,25 +50,17 @@ const Newoverallplanning = ({userRole, setUserRole}) => {
     return(
         <React.Fragment>
             {showEventModal && <Eventmodal/>}
-            {showSeasonModal && <Seasonmodal/>}
-
-                
+            {showSeasonModal && <Seasonmodal/>}                
             {showSessionModal && <Sessionmodal/>}
 
-
-            <div className="newoverallplanningcontainer">
-
+            <div className="newoverallplanning_container">
                 <Calendarheader/>
-
-                <div className="calendarcontainer">
+                <div className="newoverallplanning_calendar_container">
                     <Sidebar userRole={userRole} setUserRole={setUserRole}/>
                     <Month month={currentMonth} userRole={userRole} setUserRole={setUserRole}/>
                 </div>
-
             </div>
-
         </React.Fragment>
-
     )
 }
 

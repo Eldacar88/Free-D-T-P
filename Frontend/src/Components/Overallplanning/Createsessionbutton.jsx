@@ -7,21 +7,17 @@ const Createsessionbutton = ({userRole, setUserRole}) => {
     const {setShowSessionModal} = useContext(GlobalContext);
 
     return(
-        <div className="eventbuttoncontainer">
-            <button className="eventbutton" onClick={() =>{
+        <div className="session_buttoncontainer">
+            <button className="session_button" onClick={() =>{
                 if(userRole === "coach"){
                     setShowSessionModal(true);
                 }}
-            }
-                
-                >
-                <img src={plusImg} alt="create_event"/>
+            }>
+                <img src={plusImg} alt="create_session"/>
                 <span> Create New Session</span>
             </button>
         </div>
-
     )
-
 }
 
 export default Createsessionbutton;

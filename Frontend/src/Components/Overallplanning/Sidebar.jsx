@@ -10,14 +10,13 @@ import React from "react";
 
 const Sidebar = ({userRole, setUserRole}) => {
     return (
-        <aside className="sidebarcontainer">
+        <aside className="sidebar_container">
             <Createeventbutton userRole={userRole} setUserRole={setUserRole}/>
             <Createseasonbutton userRole={userRole} setUserRole={setUserRole}/>
             <Createsessionbutton userRole={userRole} setUserRole={setUserRole}/>
             <Smallcalendar/>
             <Loadbutton/>
             <Labels/>
-            
         </aside>
     )
 }

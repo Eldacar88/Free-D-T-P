@@ -7,19 +7,17 @@ const Createeventbutton = ({userRole, setUserRole}) => {
     const { setShowEventModal } = useContext(GlobalContext);
 
     return(
-        <div className="eventbuttoncontainer">
-            <button className="eventbutton" onClick={() =>{
+        <div className="event_button_container">
+            <button className="event_button" onClick={() =>{
                 if(userRole === "coach"){
                     setShowEventModal(true);
                 }}
-            }
-                
-                >
+            }>
+
                 <img src={plusImg} alt="create_event"/>
                 <span> Create New Competition</span>
             </button>
         </div>
-
     )
 }
 export default Createeventbutton;

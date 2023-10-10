@@ -1,0 +1,96 @@
+.seasonmodal_overlaycontainer{
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.seasonmodal_formcontainer{
+    background-color: white;
+    border-radius: 10px;
+    width: 25%;
+    border: 1px solid grey;
+}
+
+.seasonmodal_formheader{
+    background-color: rgb(230, 229, 229);
+    padding: 2px 4px 2px 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+.seasonmodal_spanicon{
+    color: gray;
+    display: flex;
+}
+
+.seasonmodal_spanicon_container{
+    color: gray;
+    display: flex;
+    gap: 10px;
+}
+
+.seasonmodal_middle{
+    padding: 3px;
+}
+
+.seasonmodal_datacontainer{
+    border: 0px;
+    display: flex;
+    gap: 20px;
+}
+
+.seasonmodal_middlegrid{
+    display: grid;
+    grid-template-columns: repeat(0.2, minmax(0, 1fr));
+    gap: 30px;
+    align-items: center;
+}
+
+.seasonmodal_input{
+    padding: 3px;
+    border: 0px;
+    color: black;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 600;
+    width: 95%;
+    padding-bottom: 2px;
+    border-bottom: 2px solid lightgray;
+}
+
+.seasonmodal_input:focus{
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    border-bottom: 2px solid blue;
+    box-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color); 
+}
+
+.seasonmodal_footercontainer{
+    display: flex;
+    justify-content: flex-end;
+    border-top: 2px solid lightgray;
+    padding: 8px;
+    margin-top: 15px;  
+}
+
+.seasonmodal_footerbutton{
+    background-color: rgb(59 130 246);
+    color: white;
+    border-radius: 5px;
+    border: 0px;
+    height: 40px;
+    width: 50px;
+    cursor: pointer;
+}
+
+.seasonmodal_footerbutton:hover{
+    background-color: rgb(37 99 235);
+}

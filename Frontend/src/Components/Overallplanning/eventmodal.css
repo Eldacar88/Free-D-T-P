@@ -1,4 +1,4 @@
-.overlaycontainer{
+.eventmodal_overlaycontainer{
     height: 100vh;
     width: 100%;
     position: fixed;
@@ -7,17 +7,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    
 }
 
-.formcontainer_eventmodal{
+.eventmodal_formcontainer{
     background-color: white;
     border-radius: 10px;
     width: 25%;
     border: 1px solid grey;
 }
 
-.formheader{
+.eventmodal_formheader{
     background-color: rgb(230, 229, 229);
     padding: 2px 4px 2px 4px;
     display: flex;
@@ -27,42 +26,41 @@
     border-top-left-radius: 10px;
 }
 
-.spanicon{
+.eventmodal_spanicon{
     color: gray;
     display: flex;
 }
 
-.spanicontainer{
+.eventmodal_spanicon_container{
     color: gray;
     display: flex;
     gap: 10px;
 }
 
-.middle{
+.eventmodal_middle{
     padding: 3px;
-    
 }
 
-.datecontainer{
+.eventmodal_datecontainer{
     border: 0px;
     display: flex;
     gap: 20px;
 }
 
-.descriptiocontainer{
+.eventmodal_descriptiocontainer{
     border: 0px;
     display: flex;
     gap: 20px;
 }
 
-.middlegrid{
+.eventmodal_middlegrid{
     display: grid;
     grid-template-columns: repeat(0.2, minmax(0, 1fr));
     gap: 30px;
     align-items: center;
 }
 
-.middleinput1{
+.eventmodal_titleinput{
     padding: 3px;
     border: 0px;
     color: black;
@@ -74,15 +72,14 @@
     border-bottom: 2px solid lightgray;
 }
 
-.middleinput1:focus{
+.eventmodal_titleinput:focus{
     outline: 2px solid transparent;
     outline-offset: 2px;
     border-bottom: 2px solid blue;
     box-shadow: var(--tw-ring-inset) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    
 }
 
-.middleinput2{
+.eventmodal_descriptioninput{
     padding: 3px;
     border: 0px;
     color: black;
@@ -92,12 +89,12 @@
     border-bottom: 2px solid lightgray;
 }
 
-.labelcontainer{
+.eventmodal_labelcontainer{
     display: flex;
     gap: 10px;
 }
 
-.check{
+.eventmodal_check{
     width: 1.5rem;
     height: 1.5rem;
     display: flex;
@@ -112,45 +109,44 @@
     color: white;
 }
 
-.bookmarkcontainer{
+.eventmodal_bookmarkcontainer{
     display: flex;
     gap: 20px;
 }
 
-.color_0{
+.eventmodal_color_0{
     background-color: indigo;
 }
 
-.color_1{
+.eventmodal_color_1{
     background-color: gray;
 }
 
-.color_2{
+.eventmodal_color_2{
     background-color: green;
 }
 
-.color_3{
+.eventmodal_color_3{
     background-color: blue;
 }
 
-.color_4{
+.eventmodal_color_4{
     background-color: red;
 }
 
-.color_5{
+.eventmodal_color_5{
     background-color: purple;
 }
 
-.footercontainer{
+.eventmodal_footercontainer{
     display: flex;
     justify-content: flex-end;
     border-top: 2px solid lightgray;
     padding: 8px;
-    margin-top: 15px;
-    
+    margin-top: 15px;  
 }
 
-.footerbutton{
+.eventmodal_footerbutton{
     background-color: rgb(59 130 246);
     color: white;
     border-radius: 5px;
@@ -160,6 +156,6 @@
     cursor: pointer;
 }
 
-.footerbutton:hover{
+.eventmodal_footerbutton:hover{
     background-color: rgb(37 99 235);
 }

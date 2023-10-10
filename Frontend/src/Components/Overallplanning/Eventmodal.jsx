@@ -26,7 +26,9 @@ const Eventmodal = () => {
         savedEvents,
         selectedEvent,
         testEvent,
-        setTestEvent
+        setTestEvent,
+        loaded, 
+        setLoaded
       } = useContext(GlobalContext);
 
     const [title, setTitle] = useState(selectedEvent ? selectedEvent.title : "");
@@ -37,178 +39,201 @@ const Eventmodal = () => {
         ? labelsClasses.find((lbl) => lbl === selectedEvent.label)
         : labelsClasses[0]);
 
-      function applyLabelclass(i) {
+    function applyLabelclass(i) {
         if(i === 0){
-            return "color_0";
+            return "eventmodal_color_0";
         }
         else if(i===1){
-            return "color_1";
+            return "eventmodal_color_1";
         }
         else if(i===2){
-            return "color_2";
+            return "eventmodal_color_2";
         }
         else if(i===3){
-            return "color_3";
+            return "eventmodal_color_3";
         }
         else if(i===4){
-            return "color_4";
+            return "eventmodal_color_4";
         }
         else if(i===5){
-            return "color_5";
+            return "eventmodal_color_5";
         }  
-      }
+    }
 
-      async function handleSubmit(e) {
+    function checkHandleSubmit(e){
         e.preventDefault();
-              const calendarEvent = {
+        if(loaded === false){
+            //alert("Load the Events first.");
+            loadEvents(e);
+            handleSubmit(e);
+        }
+        else {
+            handleSubmit(e);
+        }
+    }
+
+    async function loadEvents (e){  
+    e.preventDefault();
+    try {
+        const response = await axios.get('http://localhost:3002/getEvent');
+        const responseDataArray = Array.isArray(response.data) ? response.data : [response.data];
+        if(loaded === false){
+            responseDataArray.forEach((item, index) => {
+                const event = {
+                    title: item.title,
+                    description: item.description,
+                    label: item.label,
+                    day: parseInt(item.day, 10),
+                    id: parseInt(item.id,10),
+                    realId: item.realId,
+                }
+                dispatchCalEvent({ type: "push", payload: event });           
+                }
+            )
+        }
+        setLoaded(true);
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        if (selectedEvent) {
+            //updateEvent
+            const formData = {
+                id: selectedEvent ? selectedEvent.id : Date.now(),
+                realId: uuid4(),
                 title,
                 description,
                 label: selectedLabel,
-                day: daySelected.valueOf(),
-                id: selectedEvent ? selectedEvent.id : Date.now(),
-                realId: uuid4(),
-              };
+                day: daySelected.valueOf()
+            }
 
-              if (selectedEvent) {
-                //updateEvent
-                const formData = {
-                    id: selectedEvent ? selectedEvent.id : Date.now(),
-                    realId: uuid4(),
-                    title,
-                    description,
-                    label: selectedLabel,
-                    day: daySelected.valueOf()
-                }
-                const configUpdate = {
-                    url: "http://localhost:3002/updateEvent",
-                    method: "PUT",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    data: formData
-                }
-                try{
-                    const response = await axios(configUpdate);
-                    console.log(response.data);
-                    
-                }
-                catch(error){
-                    console.log(error.response.data.message);
-                }
+            const configUpdate = {
+                url: "http://localhost:3002/updateEvent",
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: formData
+            }
 
-                try{
-                    const response = await axios.get('http://localhost:3002/getUpdatedEvent', {params: formData,});
-                    const responseDataArray = Array.isArray(response.data) ? response.data : [response.data];
+            try{
+                const response = await axios(configUpdate);
+                console.log(response.data); 
+                const responseDataArray = Array.isArray(response.data) ? response.data : [response.data];
+                var updatedTitleConverted;
+                var updatedDescriptionConverted;
+                var updatedLabelConverted;
+                var updatedDayConverted;
+                var updatedIdConverted;
+                var updatedRealIdConverted;
 
-                    var updatedTitleConverted;
-                    var updatedDescriptionConverted;
-                    var updatedLabelConverted;
-                    var updatedDayConverted;
-                    var updatedIdConverted;
-                    var updatedRealIdConverted;
+                responseDataArray.forEach((item, index) => {
+                    //console.log(`Item ${index}:`, item);
+                    updatedTitleConverted = item.title;
+                    updatedDescriptionConverted = item.description;
+                    updatedLabelConverted = item.label;
+                    updatedDayConverted = parseInt(item.day, 10);
+                    updatedIdConverted = parseInt(item.id,10);
+                    updatedRealIdConverted = item.realId;    
+                });
 
-                    responseDataArray.forEach((item, index) => {
-                        //console.log(`Item ${index}:`, item);
-                        updatedTitleConverted = item.title;
-                        updatedDescriptionConverted = item.description;
-                        updatedLabelConverted = item.label;
-                        updatedDayConverted = parseInt(item.day, 10);
-                        updatedIdConverted = parseInt(item.id,10);
-                        updatedRealIdConverted = item.realId;    
-                    });
-
-                    const updatedEvents = {
-                        title: updatedTitleConverted,
-                        description: updatedDescriptionConverted,
-                        label: updatedLabelConverted,
-                        day: updatedDayConverted,
-                        id: updatedIdConverted,
-                        realId: updatedRealIdConverted,  
-                    }
-                    //console.log(updatedEvents);
-                    
-                    dispatchCalEvent({ type: "update", payload: updatedEvents });
-                }
-                catch(error){
-
+                const updatedEvents = {
+                    title: updatedTitleConverted,
+                    description: updatedDescriptionConverted,
+                    label: updatedLabelConverted,
+                    day: updatedDayConverted,
+                    id: updatedIdConverted,
+                    realId: updatedRealIdConverted,  
                 }
                 
-              } else {
-                //Postevent
-                const form = formRef.current;
-                const formData = {
-                    id: selectedEvent ? selectedEvent.id : Date.now(),
-                    realId: uuid4(),
-                    title,
-                    description,
-                    label: selectedLabel,
-                    day: daySelected.valueOf()
-                }
+                dispatchCalEvent({ type: "update", payload: updatedEvents });
+            }
 
-                const configPost = {
-                    url: "http://localhost:3002/postEvent",
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    data: formData
+            catch(error){
+                console.log(error.response.data.message);
+            }
+            
+        } else {
+            //Postevent
+            const form = formRef.current;
+            const formData = {
+                id: selectedEvent ? selectedEvent.id : Date.now(),
+                realId: uuid4(),
+                title,
+                description,
+                label: selectedLabel,
+                day: daySelected.valueOf()
+            }
+
+            const configPost = {
+                url: "http://localhost:3002/postEvent",
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: formData
+            }
+
+            try{
+                const response = await axios(configPost);
+                console.log(response);
+
+                if(response.status !== 201){
+                    throw new Error('failed to create event');
                 }
+            }
+            catch(error){
+                console.log(error.response.data.message);
+            }
+
+            //getEvent
+            try {
+                const response = await axios.get('http://localhost:3002/getEvent');
+                
+                const responseDataArray = Array.isArray(response.data) ? response.data : [response.data];
+
+                var titleConverted;
+                var descriptionConverted;
+                var labelConverted;
+                var dayConverted;
+                var idConverted;
+                var realIdConverted;
+
+                responseDataArray.forEach((item, index) => {
+                    titleConverted = item.title;
+                    descriptionConverted = item.description;
+                    labelConverted = item.label;
+                    dayConverted = parseInt(item.day, 10);
+                    idConverted = parseInt(item.id,10);
+                    realIdConverted = item.realId;    
+                });
+
+                const postedEvents = {
+                    title: titleConverted,
+                    description: descriptionConverted,
+                    label: labelConverted,
+                    day:dayConverted,
+                    id: idConverted,
+                    realId: realIdConverted,  
+                }
+                    dispatchCalEvent({ type: "push", payload: postedEvents });
+
+                }
+                catch (error) {
+                    console.error(error);
+                }
+        }
         
-                try{
-                    const response = await axios(configPost);
-                    console.log(response);
-
-                    if(response.status !== 201){
-                        throw new Error('failed to create event');
-                    }
-                }
-                catch(error){
-                    console.log(error.response.data.message);
-                }
-
-                //getEvent
-                try {
-                    const response = await axios.get('http://localhost:3002/getEvent');
-                    
-                    const responseDataArray = Array.isArray(response.data) ? response.data : [response.data];
-
-                    var titleConverted;
-                    var descriptionConverted;
-                    var labelConverted;
-                    var dayConverted;
-                    var idConverted;
-                    var realIdConverted;
-
-                    responseDataArray.forEach((item, index) => {
-
-                        titleConverted = item.title;
-                        descriptionConverted = item.description;
-                        labelConverted = item.label;
-                        dayConverted = parseInt(item.day, 10);
-                        idConverted = parseInt(item.id,10);
-                        realIdConverted = item.realId;    
-                    });
-
-                    const postedEvents = {
-                        title: titleConverted,
-                        description: descriptionConverted,
-                        label: labelConverted,
-                        day:dayConverted,
-                        id: idConverted,
-                        realId: realIdConverted,  
-                    }
-                        dispatchCalEvent({ type: "push", payload: postedEvents });
-
-                    }
-                    catch (error) {
-                        console.error(error);
-                    }
-          } 
         setShowEventModal(false);
-      }
+    }
       
 
-      async function deleteEvent(e) {
+    async function deleteEvent(e) {
         const formData = {
             id: selectedEvent ? selectedEvent.id : Date.now(),
             realId: uuid4(),
@@ -230,24 +255,23 @@ const Eventmodal = () => {
         try{
             const response = await axios(config);
             console.log(response);
-
             if(response.status !== 200){
                 throw new Error('failed to delete event');
             }
-            }
+        }
         catch(error){
             console.log(error.response.data.message);
         }
-      }
+    }
 
     return(
-        <div className="overlaycontainer">
-            <form className="formcontainer_eventmodal">
-                <header className="formheader">
-                    <span className="spanicon">
+        <div className="eventmodal_overlaycontainer">
+            <form className="eventmodal_formcontainer">
+                <header className="eventmodal_formheader">
+                    <span className="eventmodal_spanicon">
                         <FontAwesomeIcon icon={faBars} />
                     </span>
-                    <div className='spanicontainer'>
+                    <div className='eventmodal_spanicon_container'>
                         {selectedEvent && (
                         <span
                             onClick={() => {
@@ -258,25 +282,24 @@ const Eventmodal = () => {
                             setShowEventModal(false);
                             deleteEvent()
                             }}
-                            className="spanicon"
+                            className="eventmodal_spanicon"
                         >
                             <FontAwesomeIcon icon={faTrash} />
                         </span>
                         )}
 
-                    
                     <button>
-                        <span className="spanicon" onClick={() => setShowEventModal(false)}>
+                        <span className="eventmodal_spanicon" onClick={() => setShowEventModal(false)}>
                             <FontAwesomeIcon icon={faXmark} />
                         </span>
                     </button>
                     </div>
                 </header>
 
-                <div className="middle" ref={formRef}>
-                    <div className="middlegrid">
+                <div className="eventmodal_middle" ref={formRef}>
+                    <div className="eventmodal_middlegrid">
                         <div></div>
-                        <input className="middleinput1"
+                        <input className="eventmodal_titleinput"
                          type="text"
                          name="title" 
                          placeholder="Add Title" 
@@ -284,8 +307,8 @@ const Eventmodal = () => {
                          required 
                          onChange={(e) => setTitle(e.target.value)}/>
 
-                        <div className='datecontainer'>
-                            <span className="spanicon" onClick={() => setShowEventModal(false)}>
+                        <div className='eventmodal_datecontainer'>
+                            <span className="eventmodal_spanicon" onClick={() => setShowEventModal(false)}>
                                 <FontAwesomeIcon icon={faClock} />
                             </span>
 
@@ -293,11 +316,11 @@ const Eventmodal = () => {
 
                         </div>
                         
-                        <div className='descriptiocontainer'>
-                            <span className="spanicon" onClick={() => setShowEventModal(false)}>
+                        <div className='eventmodal_descriptiocontainer'>
+                            <span className="eventmodal_spanicon" onClick={() => setShowEventModal(false)}>
                                 <FontAwesomeIcon icon={faBarsStaggered} />
                             </span>
-                            <input className="middleinput2"
+                            <input className="eventmodal_descriptioninput"
                                 type="text"
                                 name="description" 
                                 placeholder="Add Description" 
@@ -306,20 +329,18 @@ const Eventmodal = () => {
                                 onChange={(e) => setDescription(e.target.value)}/>
                         </div>
                         
-
-                        <div className='bookmarkcontainer'>
-
+                        <div className='eventmodal_bookmarkcontainer'>
                         
-                        <span className="spanicon" onClick={() => setShowEventModal(false)}>
+                        <span className="eventmodal_spanicon" onClick={() => setShowEventModal(false)}>
                             <FontAwesomeIcon icon={faBookmark} />
                         </span>
 
-                        <div className="labelcontainer">
+                        <div className="eventmodal_labelcontainer">
                         {labelsClasses.map((lblClass, i) => (
                             <span 
                                 key={i}
                                 onClick={() => setSelectedLabel(lblClass)}
-                                className={`check ${applyLabelclass(i)}`}>
+                                className={`eventmodal_check ${applyLabelclass(i)}`}>
                                 {selectedLabel === lblClass && (
                                 <span>
                                     <FontAwesomeIcon icon={faCheck}/>
@@ -333,12 +354,12 @@ const Eventmodal = () => {
                     </div>
                 </div>
 
-                <footer className="footercontainer">
+                <footer className="eventmodal_footercontainer">
                     <button
                         type="submit"
-                        onClick={handleSubmit}
+                        onClick={checkHandleSubmit}
                         
-                        className="footerbutton">
+                        className="eventmodal_footerbutton">
                         Save
                     </button>
                 </footer>

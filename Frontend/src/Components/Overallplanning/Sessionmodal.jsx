@@ -4,6 +4,8 @@ import React, {useContext, useState, useRef} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faClock, faXmark, faBarsStaggered, faBookmark, faCheck, faTrash} from '@fortawesome/free-solid-svg-icons';
 import Form from 'react-bootstrap/Form';
+import { uuid4 } from "uuid4";
+import axios from 'axios';
 
 import Trainingtypeselection from "./Trainingtype/Trainingstypeselection";
 
@@ -21,122 +23,112 @@ const Sessionmodal = () => {
 
     const {
         setShowSessionModal,
-        daySelected,
-        dispatchCalEvent,
-        selectedEvent,
-        titleSeason,
-        setTitleSeason,
-        endDateSeason,
-        setEndDateSeason,
-        endDateSeasonMilliSeconds,
-        setEndDateSeasonMilliSeconds,
-        startDateSeason, 
-        setStartDateSeason,
-        startDateSeasonMilliSeconds,
+        selectedSession,
+        /*startDateSeasonMilliSeconds,
         setStartDateSeasonMilliSeconds,
         numberOfSessions,
         setNumberOfSessions,
         durationSession,
-        setDurationSession,
-        lastTrainingDay, 
-        setLastTrainingDay,
-        lastTrainingDayMilliSeconds,
-        setLastTrainingDayMilliSeconds,
         durationLastTrainingSession, 
-        setDurationLastTrainingSession,
+        setDurationLastTrainingSession,*/
       } = useContext(GlobalContext);
 
-      const [title, setTitle] = useState(selectedEvent ? selectedEvent.title : "");
 
-      const [session, setSession] = useState(selectedEvent ? selectedEvent.session : "");
+      const [sessionType, setSessionType] = useState(selectedSession? selectedSession.sessionType : "");
+
+      const [selectedTypes, setSelectedTypes] = useState([]);
+
+      const [selectedValues, setSelectedValues] = useState([]);
 
       const [selectedLabel, setSelectedLabel] = useState(selectedEvent
         ? labelsClasses.find((lbl) => lbl === selectedEvent.label)
         : labelsClasses[0]);
 
-      function applyLabelclass(i) {
-        if(i === 0){
-            return "color_0";
-        }
-        else if(i===1){
-            return "color_1";
-        }
-        else if(i===2){
-            return "color_2";
-        }
-        else if(i===3){
-            return "color_3";
-        }
-        else if(i===4){
-            return "color_4";
-        }
-        else if(i===5){
-            return "color_5";
-        }  
-      }
-    //wichtig für DB
-      function handleSubmit(e) {
-        e.preventDefault();
-        /*
-        const form = formRef.current;
-        const formData = {
-            id: selectedEvent ? selectedEvent.id : Date.now(),
-            title: form.title.value,
-            description: form.description.value,
-            label: selectedLabel,
-            day: daySelected.valueOf()
-            
-        }
-        console.log(formData);
-        */
-        /*
-        const config = {
-            url: "http://localhost:3002/event",
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: JSON.stringify(formData)
-        }
-        */
-        /*
-        try{
-            const response = await axios(config);
-            console.log(response);
+      const handleFormSubmit = (sessionType) => {
+        // Store the selected option in MongoDB or perform other actions
+        setSelectedValues([...selectedValues, sessionType]);
+      };
 
-            if(response.status !== 201){
-                throw new Error('failed to register');
+      const components = [];
+
+      function renderMultipleTrainingtypes(numberOfTimes) {
+        
+        for (let i = 1; i <= numberOfTimes; i++) {
+          components.push(<Trainingtypeselection 
+             setShowSessionModal={setShowSessionModal}
+             key={i} 
+             iteration={i}
+             sessionType={sessionType}
+             setSessionType={setSessionType}
+             onFormSubmit={handleFormSubmit}/>);
+        }
+      
+        return components;
+      }
+
+      async function handleSubmit(e) {
+        e.preventDefault();
+
+        const seasonTitle = title;
+        console.log("Season: " + seasonTitle);
+        var sessionNumber = 1;
+        const dayInMilliseconds = 86400000;
+        const weekInMilliseconds = 604800000;
+        var sessionStartDate = 0;
+        var sessionEndDate = 0;
+
+        selectedTypes.forEach(async (sessionType) => {
+            //console.log(`Storing ${selectedOption} in MongoDB...`);
+
+            sessionStartDate = startDateSeasonMilliSeconds;
+
+            if(sessionNumber === numberOfSessions){
+                sessionEndDate = sessionStartDate + durationLastTrainingSession;
+            }
+            else{
+                sessionEndDate = sessionStartDate + durationSession;
+            }
+            
+            
+            const formData = {
+                id: uuid4(),
+                seasonTitle: seasonTitle,
+                sessionStartDate: sessionStartDate,
+                sessionEndDate: sessionEndDate,
+                sessionNumber: sessionNumber,
+                sessionType: sessionType,
             }
 
-            if (selectedEvent) {
-                dispatchCalEvent({ type: "update", payload: response });
-              } else {
-                dispatchCalEvent({ type: "push", payload: response });
-              }
-              setShowEventModal(false);
-        }
-        catch(error){
-            if(error.response.status === 429) {
-            
-            console.log(error.response.data);
-        } else {
-            
-            console.log(error);
-        }
-        */
-        const calendarEvent = {
-          title,
-          session,
-          label: selectedLabel,
-          day: daySelected.valueOf(),
-          id: selectedEvent ? selectedEvent.id : Date.now(),
-        };
-        
-        if (selectedEvent) {
-          dispatchCalEvent({ type: "update", payload: calendarEvent });
-        } else {
-          dispatchCalEvent({ type: "push", payload: calendarEvent });
-        }
+            console.log(formData);
+            const config = {
+                url: "http://localhost:3002/postSession",
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify(formData)
+            }
+
+            try{
+                const response = await axios(config);
+                console.log(response);
+
+                if(response.status !== 201){
+                    throw new Error('failed to register');
+                }
+            }
+            catch(error){
+                if(error.response.status === 429) {
+                
+                console.log(error.response.data);
+            } else {
+                
+                console.log(error);
+                }
+            }
+            sessionNumber++;
+            sessionStartDate = sessionEndDate + dayInMilliseconds;
+          })
         setShowSessionModal(false);
       }
 
@@ -148,23 +140,7 @@ const Sessionmodal = () => {
                         <FontAwesomeIcon icon={faBars} />
                     </span>
                     <div className='spanicontainer'>
-                        {selectedEvent && (
-                        <span
-                            onClick={() => {
-                            dispatchCalEvent({
-                                type: "delete",
-                                payload: selectedEvent,
-                            });
-                            setShowSessionModal(false);
-                            
-                            }}
-                            className="spanicon"
-                        >
-                            <FontAwesomeIcon icon={faTrash} />
-                        </span>
-                        )}
-
-                    
+                                          
                     <button>
                         <span className="spanicon" onClick={() => setShowSessionModal(false)}>
                             <FontAwesomeIcon icon={faXmark} />
@@ -183,36 +159,10 @@ const Sessionmodal = () => {
                          placeholder="Add Title" 
                          value={title} 
                          required 
-                         onChange={(e) => setTitle(e.target.value)}/>
-
-
-                        <Trainingtypeselection session={session} setSession={setSession} setShowSessionModal={setShowSessionModal}/>
-
-                        
-                        <div className='bookmarkcontainer'>
-
-                        
-                        <span className="spanicon" onClick={() => setShowSessionModal(false)}>
-                            <FontAwesomeIcon icon={faBookmark} />
-                        </span>
-
-                        <div className="labelcontainer">
-                        {labelsClasses.map((lblClass, i) => (
-                            <span 
-                                key={i}
-                                onClick={() => setSelectedLabel(lblClass)}
-                                className={`check ${applyLabelclass(i)}`}>
-                                {selectedLabel === lblClass && (
-                                <span>
-                                    <FontAwesomeIcon icon={faCheck}/>
-                                </span>
-                                )}
-                            </span>
-                        ))} 
-                        </div>
-                        
-                        </div>                   
+                         onChange={(e) => setTitle(e.target.value)}/>          
                     </div>
+
+                    <div>{renderMultipleTrainingtypes(numberOfSessions)}</div>
                 </div>
 
                 <footer className="footercontainer">

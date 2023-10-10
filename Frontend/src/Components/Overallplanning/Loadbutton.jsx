@@ -6,23 +6,18 @@ import plusImg from "./assets/plus.svg"
 
 const Loadbutton = () => {
     const {
-
+        loaded, 
+        setLoaded,
         dispatchCalEvent,
         savedEvents,
       } = useContext(GlobalContext);
 
-      const [loaded, setLoaded] = useState(false);
-
     async function loadEvents (){  
-      
       try {
         const response = await axios.get('http://localhost:3002/getEvent');
         const responseDataArray = Array.isArray(response.data) ? response.data : [response.data];
-
         if(loaded === false){
           responseDataArray.forEach((item, index) => {
-              //console.log(`Item ${index}:`, item);
-    
               const event = {
                 title: item.title,
                 description: item.description,
@@ -31,31 +26,24 @@ const Loadbutton = () => {
                 id: parseInt(item.id,10),
                 realId: item.realId,
               }
-
-              
-              dispatchCalEvent({ type: "push", payload: event }); 
-                          
+              dispatchCalEvent({ type: "push", payload: event });           
             }
-            
           )
         }
-
           setLoaded(true);
         }
         catch (error) {
             console.error(error);
         }
-        
       }
+      
     return(
-        <div className="eventbuttoncontainer">
-            <button className="eventbutton" onClick={loadEvents}>
-
+        <div className="load_button_container">
+            <button className="load_button" onClick={loadEvents}>
                 <img src={plusImg} alt="load"/>
                 <span> Load</span>
             </button>
         </div>
-
     )
 }
 

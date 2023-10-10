@@ -8,21 +8,17 @@ const Createseasonbutton = ({userRole, setUserRole}) => {
     const {setShowSeasonModal} = useContext(GlobalContext);
 
     return(
-        <div className="eventbuttoncontainer">
-            <button className="eventbutton" onClick={() =>{
+        <div className="season_button_container">
+            <button className="season_button" onClick={() =>{
                 if(userRole === "coach"){
                     setShowSeasonModal(true);
                 }}
-            }
-                
-                >
+            }>
                 <img src={plusImg} alt="create_season"/>
                 <span> Create New Season</span>
             </button>
         </div>
-
     )
-
 }
 
 export default Createseasonbutton

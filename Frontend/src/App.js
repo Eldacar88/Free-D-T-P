@@ -22,7 +22,6 @@ function App() {
   const [isloggedIn, setLoggedIn] = useState(false);
   const [resetAllowed,setResetAllowed] = useState(false);
   const [resetNumber, setResetNumber] = useState(0);
-  // true = coach false = athlet
   const [userRole, setUserRole] = useState("athlet");
 
   useEffect(() => {

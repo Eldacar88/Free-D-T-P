@@ -3,13 +3,14 @@ img{
     height: 3vh;
 }
 
-.eventbutton{
+.session_button{
     border: 2px solid lightgray;
     border-radius: 20px;
     display: flex;
     align-items: center;   
+    width: 100%;
 }
 
-.eventbutton:hover{
+.session_button:hover{
     border: 3px solid lightgray;
 }

@@ -13,7 +13,9 @@ const Login = ({handleLogin, userRole, setUserRole}) => {
 
     const loginRequest = async(e) => {
         e.preventDefault();
+
         const form = formRef.current;
+        
         const data = {
             role: form.role.value,
             email: form.email.value,
@@ -63,8 +65,8 @@ const Login = ({handleLogin, userRole, setUserRole}) => {
     }
 
     return(
-        <div className="surround">        
-            <div className="logincontainer">
+        <div className="login_surround">        
+            <div className="login_container">
                 <h1>Welcome to Free-D-T-P</h1>
                 <h2>Login</h2> 
                 <form ref={formRef} onSubmit={(e) => loginRequest(e)}>
@@ -79,16 +81,13 @@ const Login = ({handleLogin, userRole, setUserRole}) => {
                         <input type="password" required name="password" id="passwordInput" class="form-control" placeholder="Password"/>
                     </div>
 
-                    {
-                        
                         <Form.Select aria-label="Default select example" name="role">
                             <option>Select Role</option>
                             <option value="Coach">Coach</option>
                             <option value="Athlet">Athlet</option>
                         </Form.Select>
-                    }
 
-                    <div className="buttoncontainer">
+                    <div className="login_button_container">
                         <Button  variant="dark" type="submit" size="lg" onClick={navigateToRegister}>
                             Register Now
                         </Button>
@@ -101,11 +100,9 @@ const Login = ({handleLogin, userRole, setUserRole}) => {
                             Forgot Password
                         </Button>
                     </div>
-
                 </form>
             </div>
         </div>
-
     )
 }
 

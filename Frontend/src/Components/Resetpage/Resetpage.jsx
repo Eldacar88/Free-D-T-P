@@ -17,7 +17,6 @@ const Resetpage = ({text,resetNumber,setResetNumber,setResetAllowed,resetAllowed
 
     const onFormHandle = async(e) => {
         e.preventDefault();
-        //console.log(formRef.current.email.value);
         const email = formRef.current.email.value;
         const config = {
             url: "http://localhost:3002/auth/reset",
@@ -34,12 +33,10 @@ const Resetpage = ({text,resetNumber,setResetNumber,setResetAllowed,resetAllowed
             console.log(response);
             setResetNumber(response.data.code);
             localStorage.setItem("resetEmail",response.data.token);
-            //showNotification("Email sent with code to reset password","normal");
             navigator("/reset/verify");
             console.log(response);
-            
-        }  catch (error) {
-            //showNotification(error.response.data.message,"red");
+        }
+        catch (error) {
             console.log(error);
         }
     }
@@ -48,11 +45,10 @@ const Resetpage = ({text,resetNumber,setResetNumber,setResetAllowed,resetAllowed
         e.preventDefault();
         const code = formRef.current.code.value;
         if(code == resetNumber) {
-            //showNotification("Code verified","normal");
             setResetAllowed(true);
             navigator("/reset/newPassword");
         } else {
-            //showNotification("Code not verified","red");
+            console.log("Code not verfied.");
         }
     }
     
@@ -61,12 +57,11 @@ const Resetpage = ({text,resetNumber,setResetNumber,setResetAllowed,resetAllowed
     }
     
     const onNewPasswordHandle = async(e) => {
-        
         e.preventDefault();
         console.log(emailToken);
+
         if(equal) {
             const newPassword = formRef.current.password.value;
-    
             const config = {
                 url: "http://localhost:3002/auth/reset/newPassword",
                 method: "POST",
@@ -80,9 +75,7 @@ const Resetpage = ({text,resetNumber,setResetNumber,setResetAllowed,resetAllowed
             }
             try {
                 const response = await axios(config);
-                //showNotification(response.data.message,"normal");
                 console.log(response);
-                
                 //setTimeout(() => {
                 //setEmailToken("");
                 //localStorage.removeItem("resetEmail");
@@ -90,26 +83,26 @@ const Resetpage = ({text,resetNumber,setResetNumber,setResetAllowed,resetAllowed
                 //}, 1500)
 
             }   catch (error) {
-                //showNotification(error.response.data.message,"red");
                 //localStorage.removeItem("resetEmail");
                 navigator("/login");
                 console.log(error);
             }
         } else {
-            //showNotification("Passwords are not equal","red");
+            console.log("Passwords are not equal.");
         }
     }
+
     {if(text === "Type in your Email to reset passwort") {
         return(
-            <div className="passwordsurround">
+            <div className="resetpagesurroundpassword">
                 <form
-                className="formcontainer"
+                className="resetpageformcontainer"
                 ref={formRef}
                 onSubmit={(e) => onFormHandle(e)}
                 component="form"
-                autoComplete="off"
-                >
-                    <h4 className="resettext">{text}</h4> 
+                autoComplete="off">
+
+                    <h4 className="resetpageresettext">{text}</h4> 
 
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">Email</label>
@@ -129,16 +122,17 @@ const Resetpage = ({text,resetNumber,setResetNumber,setResetAllowed,resetAllowed
                 </form>
         </div>
         );
+
         } else if(text==="Type in the code you received via Email") {
             return(
-            <div className="passwordsurround">
-                <form className="formcontainer"
+            <div className="resetpagesurroundpassword">
+                <form className="resetpageformcontainer"
                 ref={formRef}
                 onSubmit={(e) => onVerifyHandle(e)}
                 component="form"
-                autoComplete="off"
-                >
-                    <h4 className="resettext">{text}</h4> 
+                autoComplete="off">
+
+                    <h4 className="resetpageresettext">{text}</h4> 
 
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">Code</label>
@@ -158,16 +152,17 @@ const Resetpage = ({text,resetNumber,setResetNumber,setResetAllowed,resetAllowed
                 </form>
             </div>
             );
+
         } else if(text==="Type in your new Password") {
             return(
-                <div className="passwordsurround">
-                    <form className="formcontainer"
+                <div className="resetpage_surround_password">
+                    <form className="resetpage_formcontainer"
                     ref={formRef}
                     onSubmit={(e) => onNewPasswordHandle(e)}
                     component="form"
-                    autoComplete="off"
-                    >
-                        <h4 className="resettext">{text}</h4> 
+                    autoComplete="off">
+
+                        <h4 className="resetpage_resettext">{text}</h4> 
 
                         <div class="mb-3">
                             <label for="exampleFormControlInput1" class="form-label">New Password</label>
@@ -195,7 +190,6 @@ const Resetpage = ({text,resetNumber,setResetNumber,setResetAllowed,resetAllowed
                         <Button width="200px" variant="dark" type="submit" size="lg" onSubmit={onNewPasswordHandle}>
                             Submit
                         </Button>
-        
                     </form>
                 </div>
             );

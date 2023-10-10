@@ -6,29 +6,26 @@ import { Link, Navigate } from "react-router-dom";
 
 const Overallplanningoverview = ({userRole, setUserRole}) => {
     return(
-
-
-        <div className="overallplanningoverviewcontainer">
+        <div className="overallplanning_overview_container">
             <h1>Overall Planning</h1>
 
-            <div className="subcontainer">
+            <div className="overallplanning_subcontainer">
 
-                <div className="overallplanningcreatecontainer">
-                    <img id="image1" src={create} alt="create" />
+                <div className="overallplanning_create_container">
+                    <img id="overallplanning_image" src={create} alt="create" />
                     <Link to={"/newoverallplanning"}><Button variant="dark" size="lg">
                         Create new Overall Planing
                     </Button></Link>
                 </div>
                 
-                <div className="overallplanningloadcontainer">
-                    <img id="image1" src={load} alt="load"/>
+                <div className="overallplanning_load_container">
+                    <img id="overallplanning_image" src={load} alt="load"/>
                     <Button variant="dark" size="lg">
                         Load Existing Planing
                     </Button>
                 </div>
             </div>
         </div>
-
     )
 }
 

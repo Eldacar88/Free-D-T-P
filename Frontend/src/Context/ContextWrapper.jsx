@@ -6,139 +6,124 @@ import axios from 'axios'
 
 const ContextWrapper = (props) => {
 
-  function savedEventsReducer(state, { type, payload }) {
-    switch (type) {
-      case "push":
-        return [...state, payload];
-      case "update":
-        return state.map((evt) =>
-          evt.id === payload.id ? payload : evt
-        );
-      case "delete":
-        return state.filter((evt) => evt.id !== payload.id);
-      default:
-        throw new Error();
+    function savedEventsReducer(state, { type, payload }) {
+      switch (type) {
+        case "push":
+          return [...state, payload];
+        case "update":
+          return state.map((evt) =>
+            evt.id === payload.id ? payload : evt
+          );
+        case "delete":
+          return state.filter((evt) => evt.id !== payload.id);
+        default:
+          throw new Error();
+      }
     }
-  }
 
-
-  // DB-Part
-  /*
- async function initTestEvents (){   
+    function seasonEventsReducer(state, { type, payload }) {
+      switch (type) {
+        case "push":
+          return [...state, payload];
+        case "update":
+          return state.map((evt) =>
+            evt.id === payload.id ? payload : evt
+          );
+        case "delete":
+          return state.filter((evt) => evt.id !== payload.id);
+        default:
+          throw new Error();
+      }
+    }
   
-    try {
-      const response = await axios.get('http://localhost:3002/getEvent');
-      const resolvedData = await response.data;
-      const responseDataArray = Array.isArray(resolvedData) ? resolvedData : [resolvedData];
-      const postedEvents = []; 
-      responseDataArray.forEach((item, index) => {
-          console.log(`Item ${index}:`, item);
-
-          const event = {
-            title: item.title,
-            description: item.description,
-            label: item.label,
-            day: parseInt(item.day, 10),
-            id: parseInt(item.id,10),
-            realId: item.realId,
-          }
-          postedEvents.push(event);
-          dispatchCalEvent({ type: "push", payload: event });          
-      });
-      console.log(postedEvents);
-      console.log(savedEvents);
-      return postedEvents;
-      }
-      catch (error) {
-          console.error(error);
-      }
-  }
-
-  function initEvents() {   
-    const storageEvents = localStorage.getItem("savedEvents"); // aus DB holen
-    const parsedEvents = storageEvents ? JSON.parse(storageEvents) : [];
-    console.log(parsedEvents);
-    return parsedEvents;
-  }*/
-
     const [monthIndex, setMonthIndex] = useState(dayjs().month());
     const [smallCalendarMonth, setSmallCalendarMonth] = useState(null);
     const [daySelected, setDaySelected] = useState(dayjs());
     const [showEventModal, setShowEventModal] = useState(false);
     const [showSeasonModal, setShowSeasonModal] = useState(false);
     const [showSessionModal, setShowSessionModal] = useState(false);
+    const [loaded, setLoaded] = useState(false);
 
     const [selectedEvent, setSelectedEvent] = useState(null);
+    const [selectedSeason, setSelectedSeason] = useState(null);
+    const [selectedSession, setSelectedSession] = useState(null);
     const [labels, setLabels] = useState([]);
     const [savedEvents, dispatchCalEvent] = useReducer(
       savedEventsReducer,[]);
-    
 
-    //Season
-    const [titleSeason, setTitleSeason] = useState(selectedEvent ? selectedEvent.titleSeason : "");
-    const [endDateSeason, setEndDateSeason] = useState(selectedEvent ? selectedEvent.endDateSeason : "");
-    const [endDateSeasonMilliSeconds, setEndDateSeasonMilliSeconds] = useState(selectedEvent ? selectedEvent.endDateSeasonMilliSeconds : "");
-    const [startDateSeason, setStartDateSeason] = useState(selectedEvent ? selectedEvent.startDateSeason : "");
-    const [startDateSeasonMilliSeconds, setStartDateSeasonMilliSeconds] = useState(selectedEvent ? selectedEvent.startDateSeasonMilliSeconds : "");
-    const [numberOfSessions, setNumberOfSessions] = useState(selectedEvent ? selectedEvent.numberOfSessions : "");
-    const [durationSession, setDurationSession] = useState(selectedEvent ? selectedEvent.durationSession : "");
-    const [lastTrainingDay, setLastTrainingDay] = useState(selectedEvent ? selectedEvent.lastTrainingDay : "");
-    const [lastTrainingDayMilliSeconds, setLastTrainingDayMilliSeconds] = useState(selectedEvent ? selectedEvent.lastTrainingDayMilliSeconds : "");
-    const [durationLastTrainingSession, setDurationLastTrainingSession] = useState(selectedEvent ? selectedEvent.durationLastTrainingSession : "");
-
-
-      const filteredEvents = useMemo(() => {
-        return savedEvents.filter((evt) =>
-          labels
-            .filter((lbl) => lbl.checked)
-            .map((lbl) => lbl.label)
-            .includes(evt.label)
-        );
-      }, [savedEvents, labels]);
-    
+      const [seasonEvents, setSeasonEvents] = useReducer(
+        seasonEventsReducer,[]);
       
-      /*useEffect(() => {
-        localStorage.setItem("savedEvents", JSON.stringify(savedEvents));
-        //console.log(savedEvents);
-        //initEvents();
-        //initTestEvents();
-      }, [savedEvents]);*/
+    //Season
+    const [endDateSeasonMilliSeconds, setEndDateSeasonMilliSeconds] = useState("");
+    const [startDateSeasonMilliSeconds, setStartDateSeasonMilliSeconds] = useState("");
+    const [numberOfSessions, setNumberOfSessions] = useState("");
+    const [lastTrainingDayMilliSeconds, setLastTrainingDayMilliSeconds] = useState("");
+    const [durationLastTrainingSession, setDurationLastTrainingSession] = useState("");
 
-      useEffect(() => {
-        
-        setLabels((prevLabels) => {
-          return [...new Set(savedEvents.map((evt) => evt.label))].map(
-            (label) => {
-              const currentLabel = prevLabels.find(
-                (lbl) => lbl.label === label
-              );
-              return {
-                label,
-                checked: currentLabel ? currentLabel.checked : true,
-              };
-            }
-          );
-        });
-      }, [savedEvents]);
+    const filteredEvents = useMemo(() => {
+      return savedEvents.filter((evt) =>
+        labels
+          .filter((lbl) => lbl.checked)
+          .map((lbl) => lbl.label)
+          .includes(evt.label)
+      );
+    }, [savedEvents, labels]);
 
-      useEffect(() => {
-          if (smallCalendarMonth !== null) {
-            setMonthIndex(smallCalendarMonth);
+    const filteredSeasonEvents = useMemo(() => {
+      return seasonEvents.filter((evt) =>
+        labels
+          .filter((lbl) => lbl.checked)
+          .map((lbl) => lbl.label)
+          .includes(evt.label)
+      );
+    }, [seasonEvents, labels]);
+  
+    useEffect(() => {
+      setLabels((prevLabels) => {
+        return [...new Set(savedEvents.map((evt) => evt.label))].map(
+          (label) => {
+            const currentLabel = prevLabels.find(
+              (lbl) => lbl.label === label
+            );
+            return {
+              label,
+              checked: currentLabel ? currentLabel.checked : true,
+            };
           }
-        }, [smallCalendarMonth]);
+        );
+      });
+    }, [savedEvents]);
 
-        useEffect(() => {
-          if (!showEventModal) {
-            setSelectedEvent(null);
-          }
-        }, [showEventModal]);
-
-        function updateLabel(label) {
-          setLabels(
-            labels.map((lbl) => (lbl.label === label.label ? label : lbl))
-          );
+    useEffect(() => {
+        if (smallCalendarMonth !== null) {
+          setMonthIndex(smallCalendarMonth);
         }
+    }, [smallCalendarMonth]);
 
+    useEffect(() => {
+      if (!showEventModal) {
+        setSelectedEvent(null);
+      }
+    }, [showEventModal]);
+
+    useEffect(() => {
+      if (!showSeasonModal) {
+        setSelectedSeason(null);
+      }
+    }, [showSeasonModal]);
+
+    useEffect(() => {
+      if (!showSessionModal) {
+        setSelectedSession(null);
+      }
+    }, [showSessionModal]);
+
+    function updateLabel(label) {
+      setLabels(
+        labels.map((lbl) => (lbl.label === label.label ? label : lbl))
+      );
+    }
 
     return(
         <GlobalContext.Provider value={{
@@ -153,6 +138,10 @@ const ContextWrapper = (props) => {
           dispatchCalEvent,
           selectedEvent,
           setSelectedEvent,
+          selectedSeason, 
+          setSelectedSeason,
+          selectedSession,
+          setSelectedSession,
           savedEvents,
           setLabels,
           labels,
@@ -162,23 +151,17 @@ const ContextWrapper = (props) => {
           setShowSeasonModal,
           showSessionModal,
           setShowSessionModal,
-          
-          titleSeason,
-          setTitleSeason,
-          endDateSeason,
-          setEndDateSeason,
+          seasonEvents,
+          setSeasonEvents,
+          filteredSeasonEvents,
+          loaded, 
+          setLoaded,
           endDateSeasonMilliSeconds,
           setEndDateSeasonMilliSeconds,
-          startDateSeason, 
-          setStartDateSeason,
           startDateSeasonMilliSeconds,
           setStartDateSeasonMilliSeconds,
           numberOfSessions,
           setNumberOfSessions,
-          durationSession,
-          setDurationSession,
-          lastTrainingDay, 
-          setLastTrainingDay,
           lastTrainingDayMilliSeconds,
           setLastTrainingDayMilliSeconds,
           durationLastTrainingSession, 

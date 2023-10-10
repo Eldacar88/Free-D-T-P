@@ -34,7 +34,7 @@
     text-transform: capitalize;
 }
 
-.color_00::after, .color_01::after, .color_02::after, .color_03::after, .color_04::after, .color_05::after{
+.label_color_0::after, .label_color_1::after, .label_color_2::after, .label_color_3::after, .label_color_4::after, .label_color_5::after{
     font-family: "Font Awesome 5 Free";
     font-weight: 700;
     content: "✔";
@@ -44,30 +44,30 @@
 }
 
 
-.color_00:checked::after, .color_01:checked::after, .color_02:checked::after, .color_03:checked::after, .color_04:checked::after, .color_05:checked::after{
+.label_color_0:checked::after, .label_color_1:checked::after, .label_color_2:checked::after, .label_color_3:checked::after, .label_color_4:checked::after, .label_color_5:checked::after{
     display: block;
 }
 
-.color_00:checked{
+.label_color_0:checked{
     background-color: indigo;
 }
 
-.color_01:checked{
+.label_color_1:checked{
     background-color: gray;
 }
 
-.color_02:checked{
+.label_color_2:checked{
     background-color: green;
 }
 
-.color_03:checked{
+.label_color_3:checked{
     background-color: blue;
 }
 
-.color_04:checked{
+.label_color_4:checked{
     background-color: red;
 }
 
-.color_05:checked{
+.label_color_5:checked{
     background-color: purple;
 }

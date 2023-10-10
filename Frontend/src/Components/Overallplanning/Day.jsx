@@ -9,74 +9,79 @@ const Day = ({day, rowIdx, userRole, setUserRole}) => {
     const {
         setDaySelected,
         setShowEventModal,
-        filteredEvents, 
+        filteredEvents,
+        filteredSeasonEvents, 
         setSelectedEvent
-      } = useContext(GlobalContext);
+    } = useContext(GlobalContext);
 
-      useEffect(() => {
-        const events = filteredEvents.filter(
-          (evt) =>
-            dayjs(evt.day).format("DD-MM-YY") === day.format("DD-MM-YY")
-        );
-        setDayEvents(events);
-      }, [filteredEvents, day]);
+    useEffect(() => {
+    const events = filteredEvents.filter(
+        (evt) =>
+        dayjs(evt.day).format("DD-MM-YY") === day.format("DD-MM-YY")
+    );
+    setDayEvents(events);
+    }, [filteredEvents, day]);
+
+    /*useEffect(() => {
+    const events = filteredSeasonEvents.filter(
+        (evt) =>
+        dayjs(evt.day).format("DD-MM-YY") === day.format("DD-MM-YY")
+    );
+    setDayEvents(events);
+    }, [filteredSeasonEvents, day]);*/
 
     function getcurrentDayClass() {
         return day.format("DD-MM-YY") === dayjs().format("DD-MM-YY") ?
-        "dayparagraphtoday" : ""}
+        "day_paragraph_today" : ""}
 
     function applyEventLabel(eventlabel){
         if(eventlabel === "wettkampf"){
-            return "color_0";
+            return "day_color_0";
         }
         else if(eventlabel === "geschwindigkeit"){
-            return "color_1";
+            return "day_color_1";
         }
         else if(eventlabel === "technik"){
-            return "color_2";
+            return "day_color_2";
         }
         else if(eventlabel === "ausdauer"){
-            return "color_3";
+            return "day_color_3";
         }
         else if(eventlabel === "kraft"){
-            return "color_4";
+            return "day_color_4";
         }
         else if(eventlabel === "kraftausdauer"){
-            return "color_5";
+            return "day_color_5";
         }  
     }
 
     return(
-        <div className="daycontainer">
-            <header className="dayheader">
-
-                {rowIdx === 0 && (<p className="dayparagraph">
+        <div className="day_container">
+            <header className="day_header">
+                {rowIdx === 0 && (<p className="day_paragraph">
                     {day.format('ddd').toUpperCase()}
                 </p>)}
 
-                <p className={`dayparagraph ${getcurrentDayClass()}`}>
+                <p className={`day_paragraph ${getcurrentDayClass()}`}>
                     {day.format('DD')}
                 </p>
             </header>
 
-            <div className="dayselection" onClick={() => {
+            <div className="day_selection" onClick={() => {
                 setDaySelected(day);
                 if(userRole === "coach"){
                     setShowEventModal(true);
                 }
-                
                 }}>
                     {dayEvents.map((evt, idx) => (
                         <div
                             key={idx}
                             onClick={() => setSelectedEvent(evt)}
-                            className={`eventlabel ${applyEventLabel(evt.label)}`}
-                        >
+                            className={`day_eventlabel ${applyEventLabel(evt.label)}`}>
                             {evt.title}
                         </div>
-                        ))}
+                    ))}
             </div>
-            
         </div>
     )
 }

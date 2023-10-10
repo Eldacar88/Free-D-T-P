@@ -1,4 +1,4 @@
-.overallplanningoverviewcontainer{
+.overallplanning_overview_container{
     width: 100vw;
     height: 100vh;
     display: flex;
@@ -7,29 +7,27 @@
     gap: 10vh;
 }
 
-.subcontainer{
+.overallplanning_subcontainer{
     display: flex;
     gap: 15vw;
 }
 
-#image1{
+#overallplanning_image{
     border-radius: 50%;
     width: 300px;
     height: 449px;
 }
 
-.overallplanningcreatecontainer{
+.overallplanning_create_container{
     display: flex;
     flex-direction: column;
-    gap: 50px;
-    
+    gap: 50px; 
 }
 
-.overallplanningloadcontainer{
+.overallplanning_load_container{
     display: flex;
     flex-direction: column;
     gap: 50px;
-    
 }
 
 h1{

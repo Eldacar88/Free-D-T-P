@@ -4,8 +4,9 @@ const Hidecomponent = ({ userRole, component }) => {
     
     const role = "athlet";
     if (userRole === role) {
-        return null; // Hide the component
+        return null;
     }
+
     return(
     <div>
         {component}

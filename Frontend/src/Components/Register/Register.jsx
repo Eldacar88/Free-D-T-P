@@ -60,13 +60,13 @@ const Register = () => {
       }
 
     return (
-        <div className="surround">        
-            <div className="registercontainer">
+        <div className="register_surround">        
+            <div className="register_container">
                 <h1>Welcome to Free-D-T-P</h1>
                 <h2>Register</h2> 
                 <form ref={formRef} onSubmit={(e) => registerUser(e)}>
                    
-                    <div className="namecontainer">
+                    <div className="register_namecontainer">
                         <div class="mb-3">
                             <label for="exampleFormControlInput1" class="form-label">Frist Name</label>
                             <input required name="firstname" type="text" class="form-control" id="firstnameinput" placeholder="First Name"/>
@@ -99,7 +99,7 @@ const Register = () => {
                     </div>
 
 
-                    <div className="buttoncontainer">
+                    <div className="register_buttoncontainer">
                         <Button size="lg" variant="dark" type="submit" onSubmit={registerUser}>Register Now</Button>
                         
                         <Button  variant="dark" type="submit" size="lg" onClick={navigateToLogin}>

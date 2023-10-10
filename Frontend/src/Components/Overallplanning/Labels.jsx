@@ -7,22 +7,22 @@ const Labels = () => {
 
     function applyLabelcolor (lbl) {
         if(lbl === "wettkampf"){
-            return "color_00";
+            return "label_color_0";
         }
         else if(lbl === "geschwindigkeit"){
-            return "color_01";
+            return "label_color_1";
         }
         else if(lbl === "technik"){
-            return "color_02";
+            return "label_color_2";
         }
         else if(lbl === "ausdauer"){
-            return "color_03";
+            return "label_color_3";
         }
         else if(lbl === "kraft"){
-            return "color_04";
+            return "label_color_4";
         }
         else if(lbl === "kraftausdauer"){
-            return "color_05";
+            return "label_color_5";
         }
     }
 
