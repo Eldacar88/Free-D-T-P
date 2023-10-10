@@ -1,4 +1,4 @@
-.daycontainer{
+.day_container{
     border: 2px solid gray;
     padding: 5px;
     display: flex;
@@ -6,7 +6,7 @@
     align-items: center;
 }
 
-.dayparagraph{
+.day_paragraph{
     width: 120%;
     display: flex;
     flex-direction: column;
@@ -16,7 +16,7 @@
     margin-bottom: 1px;
 }
 
-.dayparagraphtoday{
+.day_paragraph_today{
     width: 120%;
     display: flex;
     flex-direction: column;
@@ -28,7 +28,7 @@
     color: white;
 }
 
-.dayselection{
+.day_selection{
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -36,9 +36,8 @@
     cursor: pointer;
 }
 
-.eventlabel{
+.day_eventlabel{
     width: 100%;
-    
     padding: 1px;
     margin: 3px;
     margin-bottom: 1px;
@@ -50,26 +49,26 @@
     white-space: nowrap;
 }
 
-.color_0{
+.day_color_0{
     background-color: indigo;
 }
 
-.color_1{
+.day_color_1{
     background-color: gray;
 }
 
-.color_2{
+.day_color_2{
     background-color: green;
 }
 
-.color_3{
+.day_color_3{
     background-color: blue;
 }
 
-.color_4{
+.day_color_4{
     background-color: red;
 }
 
-.color_5{
+.day_color_5{
     background-color: purple;
 }

@@ -1,16 +1,16 @@
-.smallcalendarcontainer{
+.smallcalendar_container{
     margin: 9px;
     gap: 10px;
     display: flex;
     flex-direction: column;
 }
 
-.headerparagraph{
+.smallcalendar_headerparagraph{
     color: gray;
     font-weight: bold;
 }
 
-.buttonspan{
+.smallcalendar_buttonspan{
     display:  flex;
     flex-direction: row;
     gap: 10px;
@@ -18,14 +18,13 @@
     border: 0px;
 }
 
-.minicalendarcontainer{
+.minicalendar_container{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
-    
 }
 
-.text_1{
+.minicalendar_text{
     text-align: center;
     padding-top: 1px;
     padding-bottom: 1px;
@@ -41,21 +40,21 @@
     border: 0px;
 }
 
-.nowDay{
+.smallcalendar_daynow{
     color: white;
     background-color: rgb(59 130 246);
     border-radius: 9999px;
     border: 0px;
 }
 
-.slcDay{
+.smallcalendar_slcDay{
     font-weight: bold;
     border-radius: 9999px;
     background-color: rgb(219 234 254);
     color: rgb(37 99 235);
 }
 
-.daytext{
+.smallcalendar_daytext{
     font-size: 0.875rem;
     line-height: 1.25rem;
 }

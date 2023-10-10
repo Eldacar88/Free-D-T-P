@@ -3,9 +3,9 @@ import ListGroup from 'react-bootstrap/ListGroup';
 
 const Generalplanninghome = () => {
     return(
-        <div className="generalhomecontainer">
+        <div className="home_generalplanning_container">
             <h2>Latest General Plannings</h2>
-            <ListGroup id="listgroupcontainer" defaultActiveKey="#link4">
+            <ListGroup id="generalplanning_listgroup_container" defaultActiveKey="#link4">
                 <ListGroup.Item action href="#link1">
                     Link 1
                 </ListGroup.Item>
@@ -16,9 +16,7 @@ const Generalplanninghome = () => {
                     Link 3
                 </ListGroup.Item>
             </ListGroup>
-
         </div>
-        
     )
 }
 

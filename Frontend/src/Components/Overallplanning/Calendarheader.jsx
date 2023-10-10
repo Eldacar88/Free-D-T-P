@@ -26,8 +26,8 @@ const Calendarheader = ()=> {
       }
 
     return(
-        <div className="headercontainer">
-            <img className="logo" src={logo} alt="calendar"/>
+        <div className="calendar_header_container">
+            <img className="calendar_logo" src={logo} alt="calendar"/>
             <h1>Calendar</h1>
 
             <Button variant="secondary" size="me" active onClick={handleReset}>
@@ -42,8 +42,7 @@ const Calendarheader = ()=> {
                 {">"}
             </Button>
 
-            <h2 className="currentmonth">{dayjs(new Date (dayjs().year(), monthIndex)).format("MMMM YYYY")}</h2>
-
+            <h2 className="calendar_currentmonth">{dayjs(new Date (dayjs().year(), monthIndex)).format("MMMM YYYY")}</h2>
         </div>
     )
 }

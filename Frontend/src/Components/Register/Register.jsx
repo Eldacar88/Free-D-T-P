@@ -1,7 +1,7 @@
 import "./register.css"
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Link, Navigate } from "react-router-dom";
+
 import { useRef, useState } from "react";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
@@ -21,6 +21,7 @@ const Register = () => {
             id: uuid4(),
             firstname: form.firstname.value,
             lastname: form.lastname.value,
+            role: form.role.value,
             email: form.email.value,
             password: form.password.value
         }
@@ -59,13 +60,13 @@ const Register = () => {
       }
 
     return (
-        <div className="surround">        
-            <div className="registercontainer">
+        <div className="register_surround">        
+            <div className="register_container">
                 <h1>Welcome to Free-D-T-P</h1>
                 <h2>Register</h2> 
                 <form ref={formRef} onSubmit={(e) => registerUser(e)}>
                    
-                    <div className="namecontainer">
+                    <div className="register_namecontainer">
                         <div class="mb-3">
                             <label for="exampleFormControlInput1" class="form-label">Frist Name</label>
                             <input required name="firstname" type="text" class="form-control" id="firstnameinput" placeholder="First Name"/>
@@ -77,7 +78,13 @@ const Register = () => {
                         </div>
 
                     </div>
-
+                    
+                        <Form.Select aria-label="Default select example" name="role">
+                            <option>Select Role</option>
+                            <option value="Coach">Coach</option>
+                            <option value="Athlet">Athlet</option>
+                        </Form.Select>                   
+                        
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">Email</label>
                         <input required name="email" type="email" class="form-control" id="emailInput" placeholder="Email Adress"/>
@@ -92,7 +99,7 @@ const Register = () => {
                     </div>
 
 
-                    <div className="buttoncontainer">
+                    <div className="register_buttoncontainer">
                         <Button size="lg" variant="dark" type="submit" onSubmit={registerUser}>Register Now</Button>
                         
                         <Button  variant="dark" type="submit" size="lg" onClick={navigateToLogin}>

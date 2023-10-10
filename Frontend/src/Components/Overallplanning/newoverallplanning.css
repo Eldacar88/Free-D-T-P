@@ -1,4 +1,4 @@
-.newoverallplanningcontainer{
+.newoverallplanning_container{
     width: 98vw;
     height: 97vh;
     display: flex;
@@ -8,7 +8,7 @@
     margin-top: 10px;
 }
 
-.calendarcontainer{
+.newoverallplanning_calendar_container{
     height: 100%;
     display: flex;
 }

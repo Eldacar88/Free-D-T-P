@@ -7,11 +7,9 @@ const Welcome = () => {
     const handleClick = () => {
         navigator("/login");
     }
-
     return(
-        <div className="welcomecontainer">
+        <div className="welcome_container">
             <h1>Welcome to Free-D-T-P</h1>
-            
             <Button variant="primary" onClick={handleClick}>Continue</Button>
         </div>
     )

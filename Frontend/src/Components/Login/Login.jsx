@@ -1,20 +1,23 @@
 import "./login.css"
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Link, Navigate } from "react-router-dom";
+
 import { useRef } from "react";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
 
-const Login = ({handleLogin}) => {
+const Login = ({handleLogin, userRole, setUserRole}) => {
     
     const formRef = useRef();
     const navigator = useNavigate();
 
     const loginRequest = async(e) => {
         e.preventDefault();
+
         const form = formRef.current;
+        
         const data = {
+            role: form.role.value,
             email: form.email.value,
             password: form.password.value
         }
@@ -33,8 +36,17 @@ const Login = ({handleLogin}) => {
             console.log(response);
             localStorage.setItem("token", response.data.token);
             handleLogin(true);
-            navigator("/home");
 
+            if(response.data.selectedRole === "Coach"){
+                setUserRole("coach");
+            }
+            else if (response.data.selectedRole === "Athlet"){
+                setUserRole("athlet");
+            }
+
+            console.log(userRole);
+            navigator("/home");
+                
             if(response.status !== 200){
                 throw new Error('failed to register');
             }
@@ -53,8 +65,8 @@ const Login = ({handleLogin}) => {
     }
 
     return(
-        <div className="surround">        
-            <div className="logincontainer">
+        <div className="login_surround">        
+            <div className="login_container">
                 <h1>Welcome to Free-D-T-P</h1>
                 <h2>Login</h2> 
                 <form ref={formRef} onSubmit={(e) => loginRequest(e)}>
@@ -69,8 +81,13 @@ const Login = ({handleLogin}) => {
                         <input type="password" required name="password" id="passwordInput" class="form-control" placeholder="Password"/>
                     </div>
 
+                        <Form.Select aria-label="Default select example" name="role">
+                            <option>Select Role</option>
+                            <option value="Coach">Coach</option>
+                            <option value="Athlet">Athlet</option>
+                        </Form.Select>
 
-                    <div className="buttoncontainer">
+                    <div className="login_button_container">
                         <Button  variant="dark" type="submit" size="lg" onClick={navigateToRegister}>
                             Register Now
                         </Button>
@@ -83,11 +100,9 @@ const Login = ({handleLogin}) => {
                             Forgot Password
                         </Button>
                     </div>
-
                 </form>
             </div>
         </div>
-
     )
 }
 

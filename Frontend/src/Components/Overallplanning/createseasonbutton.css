@@ -1,0 +1,16 @@
+img{
+    width: 3vw;
+    height: 3vh;
+}
+
+.season_button{
+    border: 2px solid lightgray;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;   
+    width: 100%;
+}
+
+.season_button:hover{
+    border: 3px solid lightgray;
+}
